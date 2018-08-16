@@ -93,3 +93,6 @@ are working on it.
 ### By fixing bugs or by adding features
 
 Please find issues that we need help [here](https://github.com/IEEEKeralaSection/rescuekerala/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Go through the comments in the issue to check if someone else is already working on it. Don't forget to drop a comment when you start working on it.
+
+### Flood Map
+You can find the repo for the Flood Map here : https://github.com/aswinmohanme/kerala-flood-map
