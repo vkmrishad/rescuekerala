@@ -10,18 +10,18 @@ class RequestAdmin(admin.ModelAdmin):
     list_display = ('district', 'location', 'requestee_phone', 'status','summarise')
 
     def Mark_as_completed(self, request, queryset):
-        for i in queryset:
-            Request.objects.all().filter(id = i.id).update(status = "sup")
+        self.message_user(request, "Marked selected requests as completed.")
+        queryset.update(status="sup")
         return
 
     def Mark_as_new(self, request, queryset):
-        for i in queryset:
-            Request.objects.all().filter(id = i.id).update(status = "new")
+        self.message_user(request, "Marked selected requests as new.")
+        queryset.update(status="new")
         return
     
     def Mark_as_ongoing(self, request, queryset):
-        for i in queryset:
-            Request.objects.all().filter(id = i.id).update(status = "pro")
+        self.message_user(request, "Marked selected requests as ongoing.")
+        queryset.update(status="pro")
         return
 
     def download_csv(self, request, queryset):
