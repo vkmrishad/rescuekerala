@@ -210,18 +210,23 @@ class DistrictCollection(models.Model):
 
 class RescueCamp(models.Model):
     verbose_name = 'Relief Camp'
-    name = models.CharField(max_length=50,verbose_name="Name")
-    location = models.TextField(verbose_name="Address",blank=True,null=True)
+    name = models.CharField(max_length=50,verbose_name="Camp Name - ക്യാമ്പിന്റെ പേര്")
+    location = models.TextField(verbose_name="Address - അഡ്രസ്",blank=True,null=True)
     district = models.CharField(
         max_length=15,
         choices=districts
     )
-    taluk = models.CharField(max_length=50,verbose_name="Taluk")
-    village = models.CharField(max_length=50,verbose_name="Village")
-    contacts = models.TextField(verbose_name="Phone Numbers",blank=True,null=True)
+    taluk = models.CharField(max_length=50,verbose_name="Taluk - താലൂക്ക്")
+    village = models.CharField(max_length=50,verbose_name="Village - വില്ലജ്")
+    contacts = models.TextField(verbose_name="Phone Numbers - ഫോൺ നമ്പറുകൾ",blank=True,null=True)
     data_entry_user = models.ForeignKey(User,models.SET_NULL,blank=True,null=True)
     map_link = models.CharField(max_length=250, verbose_name='Map link',blank=True,null=True,help_text="Copy and paste the full Google Maps link")
     latlng = models.CharField(max_length=100, verbose_name='GPS Coordinates', blank=True,help_text="Comma separated latlng field. Leave blank if you don't know it")
+    food_req = models.TextField(blank=True,null=True,verbose_name="Food - ഭക്ഷണം")
+    clothing_req = models.TextField(blank=True,null=True,verbose_name="Clothing - വസ്ത്രം")
+    sanitary_req = models.TextField(blank=True,null=True,verbose_name="Sanitary - സാനിറ്ററി")
+    medical_req = models.TextField(blank=True,null=True,verbose_name="Medical - മെഡിക്കൽ")
+    other_req = models.TextField(blank=True,null=True,verbose_name="Other - മറ്റുള്ളവ")
     class Meta:
         verbose_name = 'Relief Camp'
     def __str__(self):
@@ -241,7 +246,7 @@ class Person(models.Model):
     district = models.CharField(
         max_length = 15,
         choices = districts,
-        verbose_name='District - ജില്ല',
+        verbose_name='Residence District - താമസിക്കുന്ന ജില്ല',
         null=True,blank=True
     )
     notes = models.TextField(max_length=500,null=True,blank=True,verbose_name='Notes - കുറിപ്പുകൾ')

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+
+
+<div class="text-right">
+    <a href="/find_people">Search People</a> | 
+    <a href="/logout">Logout</a>
+</div>
+
+<h3>
+  Relief Camp Coordinator | ദുരിതാശ്വാസ ക്യാമ്പ് കോർഡിനേറ്റർ
+</h3>
+
+<hr>
+
+<div class="text-center text-danger">
+    {% if messages %}
+      {% for message in messages %}
+        <h4>{{ message }}</h4>
+      {% endfor %}
+    {% endif %}
+</div>
+
+{% if camps.count > 0 %}
+<div class="row">
+{% for item in camps %}
+<div class="col-md-4">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ item.name }}</h3>
+        </div>
+        <div class="panel-body">
+            {{ item.get_district_display }}<br>
+            {{ item.taluk }}<br>
+            {{ item.village }}<br>
+            <br>
+            <div class="btn-group">
+                <a href="/camp/{{ item.id  }}/add_person" class="btn btn-default">
+                  {% bootstrap_icon "user" %}  People Registration
+                </a>
+                <a href="/camp/{{ item.id  }}/details" class="btn btn-default">
+                  {% bootstrap_icon "pencil" %} Requirements
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% else  %}
+<div class="text-center text-warning">
+  <h4>
+      No relief camps configured for this user yet.
+  </h4>
+  
+</div>
+{% endif %}
+
+{% endblock %}

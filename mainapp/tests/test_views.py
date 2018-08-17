@@ -1,7 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from .models import Request, Volunteer, Contributor
+from mainapp.models import Request, Volunteer, Contributor
+
 
 class TemplateViewTests(TestCase):
     def check_template_view_response(self, url, template_name):
@@ -32,10 +33,6 @@ class TemplateViewTests(TestCase):
     def test_loading_dist_needs(self):
         response = self.check_template_view_response('/district_needs/', 'mainapp/district_needs.html')
         self.assertIn('district_data', response.context)
-
-    def test_loading_rescue_camps(self):
-        response = self.check_template_view_response('/rescue_camps/', 'mainapp/rescue_camps.html')
-        self.assertIn('camp_data', response.context)
 
     def test_loading_mapview(self):
         self.check_template_view_response('/map/', 'map.html')

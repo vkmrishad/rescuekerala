@@ -20,7 +20,8 @@ def get_list(text):
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    CACHE_TIMEOUT=(int, 60)
 )
 # reading .env file
 root = environ.Path(__file__) - 2
@@ -107,6 +108,18 @@ WSGI_APPLICATION = 'floodrelief.wsgi.application'
 # }
 DATABASES = {}
 DATABASES['default'] = dj_database_url.parse(env('B_DATABASE_URL'), conn_max_age=600)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env('REDIS_URL'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "keralarescue"
+    }
+}
+CACHE_TIMEOUT = env('CACHE_TIMEOUT')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

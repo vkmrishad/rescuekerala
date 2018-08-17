@@ -4,13 +4,13 @@
 
 {% block content %}  
   <div class="text-right">
-    <a href="/coordinator_home">Coordinator Home</a> | 
+    <a href="/find_people">Search</a> | 
     <a href="/logout">Logout</a>
   </div>
 
   <h3 class="text-center">
-      Person Registration | 
-      വ്യക്തിയെ രജിസ്റ്റർ ചെയ്യുക      
+      Camp Requirements | 
+      ക്യാമ്പിലെ ആവശ്യങ്ങൾ
   </h3>
 
   <div class="text-center text-danger">
@@ -20,19 +20,21 @@
         {% endfor %}
       {% endif %}
   </div>
+  <br>
 
   <form method="post"  class="simple-form">
     {% csrf_token %}
     {% bootstrap_form form %}
     {% buttons %}
-    <button type="submit" class="btn btn-success">
-    Submit {% bootstrap_icon "chevron-right" %}
+    <button type="submit" class="btn btn-success btn-lg">
+    Save {% bootstrap_icon "ok" %}
     </button>
     {% endbuttons %}
 
     <p class="text-center">
-        Please enter all available information. This can help relatives find them if required. <br>
-        ബന്ധുക്കൾക്ക് ഇവരെ കണ്ടെത്തുന്നതിന് ഇത് സഹായിക്കും
+        Please update this information whenever you receieve new supplies or need more.
+        <br>
+        നിങ്ങൾ പുതിയ സപ്ലൈസ് സ്വീകരിക്കുകയോ കൂടുതൽ ആവശ്യമുള്ളപ്പോഴോ അപ്ഡേറ്റ് ചെയ്യുക.        
     </p>
   </form> 
 
@@ -40,7 +42,6 @@
   <script>
   $('#id_gender_0').parents('.radio').hide();
   $('#id_gender > .radio').removeClass('radio').addClass('radio-inline');
-  $('#id_camped_at').attr('readonly', true);
   </script>
 
 {% endblock %}

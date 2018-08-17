@@ -24,9 +24,11 @@ urlpatterns = [
     path('dmodash/' , views.dmodash , name="DMODash"),
     path('dmoinfo/' , views.dmoinfo , name="DMOInfo" ),
     path('error/' , views.error , name="errorview" ),
-    path('add_person/', views.AddPerson.as_view(), name='add_person'),
     path('login/', auth_views.LoginView.as_view(template_name='mainapp/login.html'),name='user_login'),
     path('logout/', views.logout_view, name='user_logout'),
     path('relief_camps/', views.relief_camps, name='relief_camps'),
+    path('camp/<int:pk>/details/',views.CampDetails.as_view(),name='camp_details'),
+    path('camp/<int:camp_id>/add_person/', views.AddPerson.as_view(), name='add_person'),
+    path('coordinator_home/', views.coordinator_home, name='coordinator_home'),
     path('find_people/', views.find_people, name='find_people'),
 ]

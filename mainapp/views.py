@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.base import TemplateView
 from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp, NGO
 import django_filters
@@ -13,6 +13,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.db.models import Count
+from django.core.cache import cache
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.http import Http404
 
 class CreateRequest(CreateView):
     model = Request
@@ -168,11 +174,15 @@ class Maintenance(TemplateView):
 
 
 def mapdata(request):
-    if("district" in request.GET.keys()):
-        data = Request.objects.exclude(latlng__exact="").filter(district = request.GET.get("district")).values() 
+    district = request.GET.get("district", "all")
+    data = cache.get("mapdata:" + district)
+    if data:
+        return JsonResponse(list(data) , safe=False)
+    if district != "all":
+        data = Request.objects.exclude(latlng__exact="").filter(district=district).values()
     else:
         data = Request.objects.exclude(latlng__exact="").values()
-
+    cache.set("mapdata:" + district, data, settings.CACHE_TIMEOUT)
     return JsonResponse(list(data) , safe=False)
 
 def mapview(request):
@@ -198,7 +208,7 @@ def error(request):
 def logout_view(request):
     logout(request)
     # Redirect to camps page instead
-    return redirect('relief_camps/')
+    return redirect('/relief_camps')
 
 class PersonForm(forms.ModelForm):
     class Meta:
@@ -217,28 +227,76 @@ class PersonForm(forms.ModelForm):
        widgets = {
            'address': forms.Textarea(attrs={'rows':3}),
            'notes': forms.Textarea(attrs={'rows':3}),
-           'gender': forms.RadioSelect()
+           'gender': forms.RadioSelect(),
         }
 
 
     def __init__(self, *args, **kwargs):
-       user = kwargs.pop('user')
+       camp_id = kwargs.pop('camp_id')
        super(PersonForm, self).__init__(*args, **kwargs)
-       self.fields['camped_at'].queryset = RescueCamp.objects.filter(data_entry_user=user)
-       self.fields['camped_at'].initial = RescueCamp.objects.filter(data_entry_user=user).first()
+       self.fields['camped_at'].queryset = RescueCamp.objects.filter(id=camp_id)
+       self.fields['camped_at'].initial = RescueCamp.objects.filter(id=camp_id).first()
 
 class AddPerson(SuccessMessageMixin,LoginRequiredMixin,CreateView):
     login_url = '/login/'
     model = Person
     template_name='mainapp/add_person.html'  
     form_class = PersonForm
-    success_url = '/add_person/'
     success_message = "'%(name)s' registered successfully"
+
+    def get_success_url(self):
+        return reverse('add_person', args=(self.camp_id,))
+    def dispatch(self, request, *args, **kwargs):
+        self.camp_id = kwargs.get('camp_id','')
+        
+        try:
+            self.camp = RescueCamp.objects.get(id=int(self.camp_id))
+        except ObjectDoesNotExist:
+            raise Http404
+        if request.user!=self.camp.data_entry_user:
+            raise PermissionDenied
+        return super(AddPerson, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(AddPerson, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs['camp_id'] = self.camp_id
         return kwargs
+
+
+class CampDetailsForm(forms.ModelForm):
+    class Meta:
+       model = RescueCamp
+       fields = [
+        'name',
+        'food_req',
+        'clothing_req',
+        'sanitary_req',
+        'medical_req',
+        'other_req'
+        ]
+       read_only = ('name',)
+       widgets = {
+           'name': forms.Textarea(attrs={'rows':1,'readonly':True}),
+           'food_req': forms.Textarea(attrs={'rows':3}),
+           'clothing_req': forms.Textarea(attrs={'rows':3}),
+           'medical_req': forms.Textarea(attrs={'rows':3}),
+           'sanitary_req': forms.Textarea(attrs={'rows':3}),
+           'other_req': forms.Textarea(attrs={'rows':3}),
+       }
+
+class CampDetails(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
+    login_url = '/login/'
+    model = RescueCamp
+    template_name='mainapp/camp_details.html'  
+    form_class = CampDetailsForm
+    success_url = '/coordinator_home/'
+    success_message = "Updated requirements saved!"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user!=self.get_object().data_entry_user:
+            raise PermissionDenied
+        return super(CampDetails, self).dispatch(
+            request, *args, **kwargs)
 
 class PeopleFilter(django_filters.FilterSet):
     fields = ['name', 'phone','address','district','notes','gender','camped_at']
@@ -270,3 +328,8 @@ def find_people(request):
     page = request.GET.get('page')
     people = paginator.get_page(page)
     return render(request, 'mainapp/people.html', {'filter': filter , "data" : people })
+
+@login_required(login_url='/login/')
+def coordinator_home(request):
+    camps = RescueCamp.objects.filter(data_entry_user=request.user)
+    return render(request,"mainapp/coordinator_home.html",{'camps':camps})
