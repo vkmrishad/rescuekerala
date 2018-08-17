@@ -32,6 +32,10 @@
 
         1. നിങ്ങളുടെ ബ്രൗസർ <b>"www.keralarescue.in wants to know your location"</b> എന്ന ഒരു സന്ദേശം കാണിക്കും<br>
         2. സന്ദേശത്തിൽ <b>Allow</b> തിരഞ്ഞെടുക്കുക
+        <br><br>
+        How to allow location access<br><br>
+        1. Your browser will show a message <b>"www.keralarescue.in wants to know your location"</b><br>
+        2. Choose the <b>Allow</b> option.
       </div>
       <div class="modal-footer">
         <button class="btn" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Ok</button>
@@ -57,14 +61,12 @@
 					var checkboxElem = el.querySelectorAll("input")[0];
 					if(checkboxElem.id === "id_is_request_for_others" ){
 						if(checkboxElem.checked){
-							$('#id_latlng').val("");
-							$('#id_latlng_accuracy').val("");
-							$('#id_latlng_display').hide();
+							$('#id_latlng_display').parent().hide();
+							$('#id_latlng_accuracy').parent().hide();
 						}
 						else{
-							$('#id_latlng').parent().show();
+							$('#id_latlng_display').parent().show();
 							$('#id_latlng_accuracy').parent().show();
-							$('#id_latlng_display').show();
 						}
 					}
 					else if(checkboxElem.checked){

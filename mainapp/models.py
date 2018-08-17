@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 
 districts = (
@@ -62,7 +63,10 @@ class Request(models.Model):
     requestee_phone = models.CharField(max_length=10,verbose_name='Requestee Phone - അപേക്ഷകന്‍റെ ഫോണ്‍ നമ്പര്‍')
     latlng = models.CharField(max_length=100, verbose_name='GPS Coordinates - GPS നിർദ്ദേശാങ്കങ്ങൾ ', blank=True)
     latlng_accuracy = models.CharField(max_length=100, verbose_name='GPS Accuracy - GPS കൃത്യത ', blank=True)
-    is_request_for_others = models.BooleanField(verbose_name='Requesting for others - മറ്റൊരാൾക്ക് വേണ്ടി അപേക്ഷിക്കുന്നു  ', default=False)
+    #  If it is enabled no need to consider lat and lng
+    is_request_for_others = models.BooleanField(
+        verbose_name='Requesting for others - മറ്റൊരാൾക്ക് വേണ്ടി അപേക്ഷിക്കുന്നു  ', default=False,
+        help_text="If it is enabled, no need to consider lat and lng")
 
     needwater = models.BooleanField(verbose_name='Water - വെള്ളം')
     needfood = models.BooleanField(verbose_name='Food - ഭക്ഷണം')
@@ -140,7 +144,8 @@ class NGO(models.Model):
     organisation_type = models.CharField(max_length=250, verbose_name="Type of Organization")
     organisation_address = models.TextField(default='', verbose_name="Address of Organization")
     name = models.CharField(max_length=100, verbose_name="Contact Person")
-    phone = models.CharField(max_length=10)
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone = models.CharField(validators=[phone_regex], max_length=17, blank=True) # validators should be a list
     description = models.TextField(verbose_name="About Organisation")
     area = models.TextField(
         verbose_name = "Area of volunteering"

@@ -39,15 +39,20 @@
 			left: 6px;
 			width: 45%;
 			padding-right: 10px;
-			white-space: nowrap;
+			white-space: normal;
 		}
-		#requests-table td:nth-of-type(1):before { content: "District"; }
-    #requests-table td:nth-of-type(2):before { content: "Location"; }
-    #requests-table td:nth-of-type(3):before { content: "Requestee"; }
-    #requests-table td:nth-of-type(4):before { content: "Phone"; }
-    #requests-table td:nth-of-type(5):before { content: "Date"; }
-    #requests-table td:nth-of-type(6):before { content: "More details"; }
+		#requests-table td:nth-of-type(1):before { content: "District - ജില്ല"; }
+    #requests-table td:nth-of-type(2):before { content: "Location - സ്ഥലം"; }
+    #requests-table td:nth-of-type(3):before { content: "Requestee - അപേക്ഷകന്‍റെ പേര്"; }
+    #requests-table td:nth-of-type(4):before { content: "Phone - ഫോണ്‍ നമ്പര്‍"; }
+    #requests-table td:nth-of-type(5):before { content: "Date - തീയതി"; }
+    #requests-table td:nth-of-type(6):before { content: "More details - കൂടുതൽ വിശദാംശങ്ങൾ"; }
   }
+@media only screen and (max-width: 420px)  {
+		#requests-table td {
+            min-height: 60px;
+		}
+    }
 </style>
 {% endblock %}
 
@@ -61,12 +66,12 @@
   <table class="table">
     <thead>
       <tr>
-        <th>District</th>
-        <th>Location</th>
-        <th>Requestee</th>
-        <th>Phone</th>
-        <th>Date</th>
-        <th>More details</th>
+        <th>District - ജില്ല</th>
+        <th>Location - സ്ഥലം</th>
+        <th>Requestee - അപേക്ഷകന്‍റെ പേര്</th>
+        <th>Phone - ഫോണ്‍ നമ്പര്‍</th>
+        <th>Date - തീയതി</th>
+        <th>More details - കൂടുതൽ വിശദാംശങ്ങൾ</th>
       </tr>
     </thead>
     <tbody>
