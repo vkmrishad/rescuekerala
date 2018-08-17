@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 districts = (
     ('alp','Alappuzha - ആലപ്പുഴ'),
@@ -42,6 +43,12 @@ vol_categories = (
     ('bot', 'Boat Service'),
     ('rck', 'Rock Climbing'),
     ('oth', 'Other')
+)
+
+gender =(
+    (0,'Male'),
+    (1,'Female'),
+    (2,'Others')
 )
 
 class Request(models.Model):
@@ -124,6 +131,31 @@ class Volunteer(models.Model):
         return self.name
 
 
+class NGO(models.Model):
+    district = models.CharField(
+        max_length = 15,
+        choices = districts,
+    )
+    organisation = models.CharField(max_length=250, verbose_name="Name of Organization (സംഘടനയുടെ പേര്)")
+    organisation_type = models.CharField(max_length=250, verbose_name="Type of Organization")
+    organisation_address = models.TextField(default='', verbose_name="Address of Organization")
+    name = models.CharField(max_length=100, verbose_name="Contact Person")
+    phone = models.CharField(max_length=10)
+    description = models.TextField(verbose_name="About Organisation")
+    area = models.TextField(
+        verbose_name = "Area of volunteering"
+    )
+    location = models.CharField(
+        max_length=500,
+        verbose_name="Preferred Location to Volunteer"
+    )
+    is_spoc = models.BooleanField(default=False, verbose_name="Is point of contact")
+    joined = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Contributor(models.Model):
     district = models.CharField(
         max_length = 15,
@@ -166,15 +198,6 @@ class DistrictNeed(models.Model):
     def __str__(self):
         return self.get_district_display()
 
-class RescueCampDetails(models.Model):
-    district = models.CharField(
-        max_length = 15,
-        choices = districts,
-    )
-    camp_location = models.TextField(verbose_name="Camps and Locations") # Camp Locations
-
-    def __str__(self):
-        return self.get_district_display()
 
 class DistrictCollection(models.Model):
     district = models.CharField(
@@ -184,3 +207,45 @@ class DistrictCollection(models.Model):
     collection = models.TextField(
         verbose_name="Details of collected items"
     )
+
+class RescueCamp(models.Model):
+    verbose_name = 'Relief Camp'
+    name = models.CharField(max_length=50,verbose_name="Name")
+    location = models.TextField(verbose_name="Address",blank=True,null=True)
+    district = models.CharField(
+        max_length=15,
+        choices=districts
+    )
+    taluk = models.CharField(max_length=50,verbose_name="Taluk")
+    village = models.CharField(max_length=50,verbose_name="Village")
+    contacts = models.TextField(verbose_name="Phone Numbers",blank=True,null=True)
+    data_entry_user = models.ForeignKey(User,models.SET_NULL,blank=True,null=True)
+    map_link = models.CharField(max_length=250, verbose_name='Map link',blank=True,null=True,help_text="Copy and paste the full Google Maps link")
+    latlng = models.CharField(max_length=100, verbose_name='GPS Coordinates', blank=True,help_text="Comma separated latlng field. Leave blank if you don't know it")
+    class Meta:
+        verbose_name = 'Relief Camp'
+    def __str__(self):
+        return self.name
+
+
+class Person(models.Model):
+    name = models.CharField(max_length=30,blank=False,null=False,verbose_name="Name - പേര്")
+    phone = models.CharField(max_length=11,null=True,blank=True,verbose_name='Mobile - മൊബൈൽ')
+    age = models.IntegerField(null=True,blank=True,verbose_name="Age - പ്രായം")
+    gender = models.IntegerField(
+        choices = gender,
+        verbose_name='Gender - ലിംഗം',
+        null=True,blank=True
+    )
+    address = models.TextField(max_length=150,null=True,blank=True,verbose_name="Address - വിലാസം")
+    district = models.CharField(
+        max_length = 15,
+        choices = districts,
+        verbose_name='District - ജില്ല',
+        null=True,blank=True
+    )
+    notes = models.TextField(max_length=500,null=True,blank=True,verbose_name='Notes - കുറിപ്പുകൾ')
+    camped_at = models.ForeignKey(RescueCamp,models.CASCADE,blank=False,null=False,verbose_name='Camp Name - ക്യാമ്പിന്റെ പേര്')
+    added_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.name
