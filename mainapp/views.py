@@ -87,16 +87,22 @@ class DistNeeds(TemplateView):
         context['district_data'] = DistrictNeed.objects.all()
         return context
 
-class ReliefCamps(TemplateView):
-    template_name = "mainapp/relief_camps.html"
+class RescueCampFilter(django_filters.FilterSet):
+    class Meta:
+        model = RescueCamp
+        fields = ['district']
 
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['relief_camps'] = RescueCamp.objects.annotate(count=Count('person')).order_by('district','name').all()
-        return context
+    def __init__(self, *args, **kwargs):
+        super(RescueCampFilter, self).__init__(*args, **kwargs)
+        # at startup user doen't push Submit button, and QueryDict (in data) is empty
+        if self.data == {}:
+            self.queryset = self.queryset.none()
 
+def relief_camps(request):
+    filter = RescueCampFilter(request.GET, queryset=RescueCamp.objects.all())
+    relief_camps = filter.qs.annotate(count=Count('person')).order_by('district','name').all()
+
+    return render(request, 'mainapp/relief_camps.html', {'filter': filter , 'relief_camps' : relief_camps, 'district_chosen' : len(request.GET.get('district') or '')>0 })
 
 class RequestFilter(django_filters.FilterSet):
     class Meta:
@@ -119,12 +125,21 @@ class RequestFilter(django_filters.FilterSet):
 
 def request_list(request):
     filter = RequestFilter(request.GET, queryset=Request.objects.all() )
-    req_data = filter.qs.order_by('-dateadded')
+    req_data = filter.qs.order_by('-id')
     paginator = Paginator(req_data, 100)
     page = request.GET.get('page')
     req_data = paginator.get_page(page)
     return render(request, 'mainapp/request_list.html', {'filter': filter , "data" : req_data })
 
+def request_details(request, request_id=None):
+    if not request_id:
+        return HttpResponseRedirect("/error?error_text={}".format('Page not found!'))
+    filter = RequestFilter(None)
+    try:
+        req_data = Request.objects.get(id=request_id)
+    except:
+        return HttpResponseRedirect("/error?error_text={}".format('Sorry, we couldnt fetch details for that request'))
+    return render(request, 'mainapp/request_details.html', {'filter' : filter, 'req': req_data })
 
 class DistrictManagerFilter(django_filters.FilterSet):
     class Meta:
@@ -148,7 +163,7 @@ class Maintenance(TemplateView):
 def mapdata(request):
     data = Request.objects.exclude(latlng__exact="").values()
 
-    return JsonResponse(list(data) , safe=False) 
+    return JsonResponse(list(data) , safe=False)
 
 def mapview(request):
     return render(request,"map.html")
@@ -177,6 +192,10 @@ def dmoinfo(request):
         }
     )
 
+def error(request):
+    error_text = request.GET.get('error_text')
+    return render(request , "mainapp/error.html", {"error_text" : error_text})
+
 def logout_view(request):
     logout(request)
     # Redirect to camps page instead
@@ -188,13 +207,20 @@ class PersonForm(forms.ModelForm):
        fields = [
         'camped_at',
         'name',
+        'phone',
         'age',
         'gender',
-        'address',
         'district',
-        'phone',
+        'address',
         'notes'
         ]
+       
+       widgets = {
+           'address': forms.Textarea(attrs={'rows':3}),
+           'notes': forms.Textarea(attrs={'rows':3}),
+           'gender': forms.RadioSelect()
+        }
+
 
     def __init__(self, *args, **kwargs):
        user = kwargs.pop('user')

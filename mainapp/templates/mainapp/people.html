@@ -48,21 +48,21 @@
             <div class="pagination" >
               <span class="step-links">
                   {% if data.has_previous %}
-                      <a href="?page=1">&laquo; first</a>
-                      <a href="?page={{data.previous_page_number}}">previous</a>
+                      <a href="?page=1&name__icontains={{ request.GET.name__icontains }}&phone__icontains={{ request.GET.phone__icontains }}&address__icontains={{ request.GET.address__icontains }}&district={{ request.GET.district }}&notes__icontains={{ request.GET.notes__icontains }}&gender={{ request.GET.gender }}&camped_at={{ request.GET.camped_at }}">&laquo; first</a>
+                      <a href="?page={{data.previous_page_number}}&name__icontains={{ request.GET.name__icontains }}&phone__icontains={{ request.GET.phone__icontains }}&address__icontains={{ request.GET.address__icontains }}&district={{ request.GET.district }}&notes__icontains={{ request.GET.notes__icontains }}&gender={{ request.GET.gender }}&camped_at={{ request.GET.camped_at }}">previous</a>
                   {% endif %}
             
                   {% for i in data.paginator.page_range %}
                   {% if data.number == i %}
                     <a class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
                   {% else %}
-                    <a href="?page={{i}}">{{ i }}</a>
+                    <a href="?page={{i}}&name__icontains={{ request.GET.name__icontains }}&phone__icontains={{ request.GET.phone__icontains }}&address__icontains={{ request.GET.address__icontains }}&district={{ request.GET.district }}&notes__icontains={{ request.GET.notes__icontains }}&gender={{ request.GET.gender }}&camped_at={{ request.GET.camped_at }}">{{ i }}</a>
                   {% endif %}
                 {% endfor %}
             
                   {% if data.has_next %}
-                      <a href="?page={{ data.next_page_number }}">next</a>
-                      <a href="?page={{ data.paginator.num_pages }}">last &raquo;</a>
+                      <a href="?page={{ data.next_page_number }}&name__icontains={{ request.GET.name__icontains }}&phone__icontains={{ request.GET.phone__icontains }}&address__icontains={{ request.GET.address__icontains }}&district={{ request.GET.district }}&notes__icontains={{ request.GET.notes__icontains }}&gender={{ request.GET.gender }}&camped_at={{ request.GET.camped_at }}">next</a>
+                      <a href="?page={{ data.paginator.num_pages }}&name__icontains={{ request.GET.name__icontains }}&phone__icontains={{ request.GET.phone__icontains }}&address__icontains={{ request.GET.address__icontains }}&district={{ request.GET.district }}&notes__icontains={{ request.GET.notes__icontains }}&gender={{ request.GET.gender }}&camped_at={{ request.GET.camped_at }}">last &raquo;</a>
                   {% endif %}
               </span>
             </div>
