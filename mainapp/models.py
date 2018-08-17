@@ -104,7 +104,7 @@ class Request(models.Model):
         if(self.needkit_util):
             out += "\nKit Requirements :\n {}".format(self.detailkit_util)
         if(self.needrescue):
-            out += "\nKit Requirements :\n {}".format(self.detailrescue)    
+            out += "\nRescue Action :\n {}".format(self.detailrescue)    
         if(len(self.needothers.strip()) != 0):
             out += "\nOther Needs :\n {}".format(self.needothers)
         return out
