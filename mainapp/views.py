@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.db.models import Count
+from django.db.models import Count, Case, When
 
 class CreateRequest(CreateView):
     model = Request
@@ -159,12 +159,23 @@ def dmodash(request):
 def dmoinfo(request):
     if("district" not in request.GET.keys()):return HttpResponseRedirect("/")
     dist = request.GET.get("district")
-    reqserve = Request.objects.all().filter(status = "sup" , district = dist).count()
-    reqtotal = Request.objects.all().filter(district = dist).count()
+    req_summary = Request.objects.filter(district=dist).aggregate(
+        serve=Count(Case(When(status="sup", then=1))),
+        total=Count('id'),
+    )
     volcount = Volunteer.objects.all().filter(district = dist).count()
-    conserve = Contributor.objects.all().filter(status = "ful" , district = dist).count()
-    contotal = Contributor.objects.all().filter(district = dist).count()
-    return render(request ,"dmoinfo.html",{"reqserve" : reqserve , "reqtotal" : reqtotal , "volcount" : volcount , "conserve" : conserve , "contotal" : contotal })
+    con_summary = Contributor.objects.filter(district=dist).aggregate(
+        serve=Count(Case(When(status="ful", then=1))),
+        total=Count('id'),
+    )
+    return render(
+        request ,"dmoinfo.html",
+        {
+            "reqserve" : req_summary['serve'], "reqtotal" : req_summary['total'],
+            "volcount" : volcount,
+            "conserve" : con_summary['serve'], "contotal" : con_summary['total'],
+        }
+    )
 
 def logout_view(request):
     logout(request)
