@@ -1,10 +1,18 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+{% load static %}
 
 {% block content %}
   <form method="post"  class="simple-form">
   {% csrf_token %}
   {% bootstrap_form form %}
+  <a id="location-manually" class="btn btn-primary pull-right">
+  	Enter location manually
+  </a>
+  <div id="placepicker-form" style="display: none;">
+  {% include "mainapp/placepicker_form.html" %}
+</div>
+
   {% buttons %}
   <button type="submit" class="btn btn-primary">
   {% bootstrap_icon "star" %} Submit
@@ -22,7 +30,7 @@
       <div class="modal-body">
         നിങ്ങളുടെ സ്ഥലം നൽകുന്നതെങ്ങനെ<br><br>
 
-        1. നിങ്ങളുടെ ബ്രൗസർ <b>"www.keralaresue.in wants to know your location"</b> എന്ന ഒരു സന്ദേശം കാണിക്കും<br>
+        1. നിങ്ങളുടെ ബ്രൗസർ <b>"www.keralarescue.in wants to know your location"</b> എന്ന ഒരു സന്ദേശം കാണിക്കും<br>
         2. സന്ദേശത്തിൽ <b>Allow</b> തിരഞ്ഞെടുക്കുക
       </div>
       <div class="modal-footer">
@@ -49,8 +57,8 @@
 					var checkboxElem = el.querySelectorAll("input")[0];
 					if(checkboxElem.id === "id_is_request_for_others" ){
 						if(checkboxElem.checked){
-							$('#id_latlng').parent().hide();
-							$('#id_latlng_accuracy').parent().hide();
+							$('#id_latlng').val("");
+							$('#id_latlng_accuracy').val("");
 							$('#id_latlng_display').hide();
 						}
 						else{
@@ -102,13 +110,30 @@
 
 		var error = function(err) {
 			console.warn(`ERROR(${err.code}): ${err.message}`);
+			showLocationPickerForm();
 		}
-    $('#modal_ok_button').click(function(event) {
-      navigator.geolocation.getCurrentPosition(success, error, options);
-    });
+
+		$('#instructionModal').on('hidden.bs.modal', function (e) {
+		  navigator.geolocation.getCurrentPosition(success, error, options);
+		})
+
 		$('#instructionModal').modal('show');
 	}
 
+	function showLocationPickerForm(){
+		$('#placepicker-form').show();
+		$('#location-manually').hide();
+	}
+
+	$('#location-manually').on('click', function(event){
+		event.preventDefault();
+		showLocationPickerForm();
+	})
+
   </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdPKYd4vwgQY-OmF0Vn22wJu0EcDyi1MQ&libraries=places&callback=initMap"
+        async defer></script>
+ <script src="{% static 'js/placepicker.js' %}"
+        async defer></script>
 
 {% endblock %}

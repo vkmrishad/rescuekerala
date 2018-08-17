@@ -61,7 +61,7 @@
         {{ item.location | linebreaks }}
       </td>
       <td class="phone-links">
-        {{ item.contacts | linebreaks }}
+        <a href="tel:{{ item.contacts }}" >{{ item.contacts | linebreaks }}</a>
       </td>
       <td>
         {{ item.count }}

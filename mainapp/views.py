@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
-from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp
+from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp, NGO
 import django_filters
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse
@@ -13,6 +13,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.db.models import Count, Case, When
+from django.core.cache import cache
+from django.conf import settings
 
 class CreateRequest(CreateView):
     model = Request
@@ -41,19 +43,26 @@ class CreateRequest(CreateView):
         'detailtoilet',
         'needothers'
     ]
-    success_url = '/req_sucess'
+    success_url = '/req_sucess/'
 
 
 class RegisterVolunteer(CreateView):
     model = Volunteer
     fields = ['name', 'district', 'phone', 'organisation', 'area', 'address']
+    success_url = '/reg_success/'
+
+
+class RegisterNGO(CreateView):
+    model = NGO
+    fields = ['organisation', 'organisation_type','organisation_address', 'name', 'phone', 'description', 'area',
+              'location']
     success_url = '/reg_success'
 
 
 class RegisterContributor(CreateView):
     model = Contributor
     fields = ['name', 'district', 'phone', 'address',  'commodities']
-    success_url = '/contrib_success'
+    success_url = '/contrib_success/'
 
 
 class HomePageView(TemplateView):
@@ -161,8 +170,15 @@ class Maintenance(TemplateView):
 
 
 def mapdata(request):
-    data = Request.objects.exclude(latlng__exact="").values()
-
+    district = request.GET.get("district", "all")
+    data = cache.get("mapdata:" + district)
+    if data:
+        return JsonResponse(list(data) , safe=False)
+    if district != "all":
+        data = Request.objects.exclude(latlng__exact="").filter(district=district).values()
+    else:
+        data = Request.objects.exclude(latlng__exact="").values()
+    cache.set("mapdata:" + district, data, settings.CACHE_TIMEOUT)
     return JsonResponse(list(data) , safe=False)
 
 def mapview(request):
@@ -199,7 +215,7 @@ def error(request):
 def logout_view(request):
     logout(request)
     # Redirect to camps page instead
-    return redirect('relief_camps')
+    return redirect('relief_camps/')
 
 class PersonForm(forms.ModelForm):
     class Meta:
