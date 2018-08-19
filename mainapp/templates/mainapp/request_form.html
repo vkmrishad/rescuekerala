@@ -20,7 +20,7 @@
 			cursor:pointer;
 		}
 		#place_modal_map{
-				height: 30em;
+				height: 45vh;
 		}
 	</style>
 {% endblock %}
@@ -64,7 +64,7 @@
 
 
 	<!-- PlacePicker modal -->
-	<div id="place_picker_modal" class="modal  fade" role="dialog" aria-labelledby="place_picker_modal_label" aria-hidden="true" >
+	<div id="place_picker_modal" class="modal  fade" role="dialog" aria-labelledby="place_picker_modal_label" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
 		<div class="modal-dialog" style="background: white">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -84,7 +84,7 @@
 				<div id="place_modal_map"></div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-success" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Save</button>
+				<button class="btn btn-success" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Done</button>
 			</div>
 		</div>
 	</div>
@@ -195,7 +195,9 @@
 		var mapOptions = {
 			zoom: zoom || 14,
 			center: new google.maps.LatLng(lat, lng),
-			mapTypeId: google.maps.MapTypeId.ROADMAP
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			fullscreenControl: false,
+			gestureHandling: 'greedy'
 		};
 		modalMap = new google.maps.Map(document.getElementById('place_modal_map'),
 			mapOptions);
