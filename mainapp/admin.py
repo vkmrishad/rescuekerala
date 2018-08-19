@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 
 from .models import Request, Volunteer, Contributor, DistrictNeed, DistrictCollection, DistrictManager, vol_categories, \
-    RescueCamp, Person, NGO, Announcements, ReliefCampData
+    RescueCamp, Person, NGO, Announcements, DataCollection
 
 
 def create_csv_response(csv_name, header_row, body_rows):
@@ -174,13 +174,8 @@ class PersonAdmin(admin.ModelAdmin):
         return response
 
 
-class ReliefCampDataAdmin(admin.ModelAdmin):
-    list_display = ['description', 'file', 'district', 'tag', 'phone']
-    list_filter = ('district',)
-    actions = ['mark_completed']
-
-    def mark_completed(self, request, queryset):
-        queryset.update(tag="completed")
+class DataCollectionAdmin(admin.ModelAdmin):
+    list_display = ['document_name', 'document', 'tag']
 
 
 admin.site.register(Request, RequestAdmin)
@@ -193,4 +188,4 @@ admin.site.register(RescueCamp, RescueCampAdmin)
 admin.site.register(NGO, NGOAdmin)
 admin.site.register(Announcements, AnnouncementAdmin)
 admin.site.register(Person, PersonAdmin)
-admin.site.register(ReliefCampData, ReliefCampDataAdmin)
+admin.site.register(DataCollection, DataCollectionAdmin)

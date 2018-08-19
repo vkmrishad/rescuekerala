@@ -38,6 +38,5 @@ urlpatterns = [
     path('find_people/', views.find_people, name='find_people'),
     path('announcements/', views.announcements, name="Announcements"),
     path('camp_requirements/', views.camp_requirements_list, name='camp_requirements_list'),
-    path('add_camp_data/', views.AddCampData.as_view(), name='camp_data'),
     path('submission_success/', views.SubmissionSuccess.as_view(), name='submission_success'),
 ]
