@@ -68,7 +68,7 @@ class RequestViewTests(TestCase):
         self.assertFormError(response, 'form', 'requestee_phone', 'This field is required.')
         self.assertFormError(response, 'form', 'requestee', 'This field is required.')
         post_data = {
-            'requestee_phone': '3234343434934'
+            'requestee_phone': '32343434349'
         }
         response = client.post(self.url, post_data)
         self.assertEqual(response.status_code, 200)
