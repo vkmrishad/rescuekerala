@@ -3,7 +3,8 @@ import csv
 from django.contrib import admin
 from django.http import HttpResponse
 
-from .models import Request, Volunteer, Contributor, DistrictNeed, DistrictCollection, DistrictManager, vol_categories, RescueCamp, Person, NGO, Announcements
+from .models import Request, Volunteer, Contributor, DistrictNeed, DistrictCollection, DistrictManager, vol_categories, \
+    RescueCamp, Person, NGO, Announcements, ReliefCampData
 
 
 def create_csv_response(csv_name, header_row, body_rows):
@@ -124,6 +125,7 @@ class RescueCampAdmin(admin.ModelAdmin):
     list_display = ('district', 'name', 'location', 'contacts', 'total_people',
                     'total_males', 'total_females', 'total_infants', 'food_req',
                     'clothing_req', 'sanitary_req', 'medical_req', 'other_req')
+    list_filter = ('district',)
 
     def download_csv(self, request, queryset):
         header_row = ('district', 'name', 'location', 'contacts', 'total_people',
@@ -164,6 +166,15 @@ class PersonAdmin(admin.ModelAdmin):
         return response
 
 
+class ReliefCampDataAdmin(admin.ModelAdmin):
+    list_display = ['description', 'file', 'district', 'tag', 'phone']
+    list_filter = ('district',)
+    actions = ['mark_completed']
+
+    def mark_completed(self, request, queryset):
+        queryset.update(tag="completed")
+
+
 admin.site.register(Request, RequestAdmin)
 admin.site.register(Volunteer, VolunteerAdmin)
 admin.site.register(Contributor, ContributorAdmin)
@@ -174,3 +185,4 @@ admin.site.register(RescueCamp, RescueCampAdmin)
 admin.site.register(NGO, NGOAdmin)
 admin.site.register(Announcements, AnnouncementAdmin)
 admin.site.register(Person, PersonAdmin)
+admin.site.register(ReliefCampData, ReliefCampDataAdmin)

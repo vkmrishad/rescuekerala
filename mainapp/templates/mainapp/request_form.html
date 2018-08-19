@@ -137,6 +137,7 @@
 	$('#id_is_request_for_others').on('change', function(){
 		if($(this).is(":checked")){
 			$('#pac-input').attr('required', 'required');
+			showLocationPickerForm();
 		}
 		else{
 			$('#pac-input').removeAttr('required');

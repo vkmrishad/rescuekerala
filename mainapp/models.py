@@ -1,3 +1,5 @@
+import os
+import uuid
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
@@ -64,6 +66,7 @@ announcement_priorities = [
     ('H', 'High'),
     ('M', 'Medium'),
     ('L', 'Low')]
+
 
 
 class Request(models.Model):
@@ -347,6 +350,13 @@ class Person(models.Model):
     def __str__(self):
         return self.name
 
+
+def upload_to(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('media/', filename)
+
+
 class Announcements(models.Model):
     dateadded = models.DateTimeField(auto_now_add=True)
     priority = models.CharField(
@@ -356,13 +366,40 @@ class Announcements(models.Model):
         default='L')
 
     description = models.TextField(blank=True)
-    image = models.ImageField(blank=True, upload_to='media')
-    upload = models.FileField(blank=True, upload_to='media')
+    image = models.ImageField(blank=True, upload_to=upload_to)
+    upload = models.FileField(blank=True, upload_to=upload_to)
     is_pinned = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Announcement: News'
         verbose_name_plural = 'Announcements: News'
+
+    def __str__(self):
+        return self.description[:100]
+
+
+class ReliefCampData(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(blank=True, verbose_name="Details of requirements")
+    file = models.FileField(blank=True, upload_to='camp_data')
+    district = models.CharField(
+        max_length=15,
+        choices=districts,
+        verbose_name='District - ജില്ല',
+        null=True,
+        blank=True
+    )
+    tag = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField(
+        max_length=11,
+        verbose_name="Phone - ഫോണ്‍ നമ്പര്‍",
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = 'Relief: Camp Data'
+        verbose_name_plural = 'Relief: Camp Datas'
 
     def __str__(self):
         return self.description[:100]

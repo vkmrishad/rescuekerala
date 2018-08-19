@@ -14,6 +14,7 @@ import os
 import environ
 import dj_database_url
 import raven
+import datetime
 
 def get_list(text):
     return [item.strip() for item in text.split(',')]
@@ -67,6 +68,9 @@ INSTALLED_APPS = [
     'django_filters',
     'storages',
     'raven.contrib.django.raven_compat',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
 ]
 
 MIDDLEWARE = [
@@ -212,3 +216,22 @@ else:
     MEDIA_URL = '/media/'
 ADMIN_SITE_HEADER = "Keralarescue Dashboard"
 MEDIA_ROOT = 'media'
+
+#JWT REST Auth for API
+REST_USE_JWT = True
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=20)
+}
+REST_SESSION_LOGIN = False
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
