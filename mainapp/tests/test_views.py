@@ -178,4 +178,4 @@ class RegisterContributorViewTests(TestCase):
         self.assertEqual(contributor.name, 'Rag Sagar')
         self.assertEqual(contributor.district, 'pkd')
         self.assertEqual(contributor.phone, '8893845901')
-self.assertEqual(contributor.address, 'Near Mosque')
+        self.assertEqual(contributor.address, 'Near Mosque')
