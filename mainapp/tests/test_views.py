@@ -86,7 +86,7 @@ class RequestViewTests(TestCase):
             'latlng_accuracy': ''
         }
         response = client.post(self.url, post_data)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Request.objects.count(), 1)
         req_obj = Request.objects.last()
         self.assertEqual(req_obj.district, 'pkd')
