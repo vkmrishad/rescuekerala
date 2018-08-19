@@ -263,7 +263,6 @@ class DistrictCollection(models.Model):
         verbose_name_plural = 'District: Collections'
 
 class RescueCamp(models.Model):
-    verbose_name = 'Relief Camp'
     name = models.CharField(max_length=50,verbose_name="Camp Name - ക്യാമ്പിന്റെ പേര്")
     location = models.TextField(verbose_name="Address - അഡ്രസ്",blank=True,null=True)
     district = models.CharField(
@@ -287,6 +286,11 @@ class RescueCamp(models.Model):
     sanitary_req = models.TextField(blank=True,null=True,verbose_name="Sanitary - സാനിറ്ററി")
     medical_req = models.TextField(blank=True,null=True,verbose_name="Medical - മെഡിക്കൽ")
     other_req = models.TextField(blank=True,null=True,verbose_name="Other - മറ്റുള്ളവ")
+    facilities_available = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Facilities existing, (light, kitchen, toilets), etc - ലഭ്യമായ സൗകര്യങ്ങൾ "
+    )
 
     class Meta:
         verbose_name = 'Relief: Camp'

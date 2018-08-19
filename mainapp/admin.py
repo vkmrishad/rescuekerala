@@ -124,7 +124,8 @@ class RescueCampAdmin(admin.ModelAdmin):
     actions = ['download_csv']
     list_display = ('district', 'name', 'location', 'contacts', 'total_people',
                     'total_males', 'total_females', 'total_infants', 'food_req',
-                    'clothing_req', 'sanitary_req', 'medical_req', 'other_req')
+                    'clothing_req', 'sanitary_req', 'medical_req', 'other_req',
+                    'facilities_available')
     list_filter = ('district',)
 
     def download_csv(self, request, queryset):

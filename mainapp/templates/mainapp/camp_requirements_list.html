@@ -36,6 +36,7 @@
       <th>Sanitary Requirements</th>
       <th>Medical Requirements</th>
       <th>Other Requirements</th>
+      <th>Facilities Available</th>
     </tr>
   {% for item in data %}
     <tr valign="top">
@@ -78,6 +79,9 @@
       </td>
       <td class="long-col">
         {{item.other_req|linebreaks}}
+      </td>
+      <td class="long-col">
+        {{item.facilities_available|linebreaks}}
       </td>
     </tr>
     {% endfor %}

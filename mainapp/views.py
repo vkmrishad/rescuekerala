@@ -2,6 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.base import TemplateView
+
+from mainapp.redis_queue import sms_queue
+from mainapp.sms_handler import send_confirmation_sms
 from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp, NGO, \
     Announcements, ReliefCampData
 import django_filters
@@ -56,6 +59,13 @@ class CreateRequest(CreateView):
         'needothers'
     ]
     success_url = '/req_sucess/'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        sms_queue.enqueue(
+            send_confirmation_sms, self.object.requestee_phone
+        )
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class RegisterVolunteer(CreateView):
@@ -347,7 +357,8 @@ class CampRequirementsForm(forms.ModelForm):
         'clothing_req',
         'sanitary_req',
         'medical_req',
-        'other_req'
+        'other_req',
+        'facilities_available'
         ]
        read_only = ('name',)
        widgets = {
