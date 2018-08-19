@@ -15,9 +15,11 @@ The Website for co-ordinating the rehabilitation of the people affected in the 2
     - [Redis](#redis)
     - [Setting up an S3 Account](#setting-up-an-s3-account)
 - [Getting started](#getting-started)
+- [Creating migration files](#creating-migration-files)
 - [Running tests](#running-tests)
 - [Enable HTTPS connections](#enable-https-connections)
 - [How can you help?](#how-can-you-help)
+    - [Verification of Rescue Requests](#verification-of-rescue-requests)
     - [Contribution Guidelines](#contribution-guidelines)
     - [Testing PRs](#by-testing)
     - [Submitting PRs](#submitting-pull-requests)
@@ -147,6 +149,11 @@ That's it!
 
 <hr>
 
+### Creating migration files
+[^toc](#creating-migration-files)
+
+If your code changes anything in models.py, you might need to make changes in database schema, or other constraints. To create migrations files, run python3 manage.py makemigrations --settings=floodrelief.settings after making your changes. Also make sure to add these files in the commit.
+
 ### Running tests
 [^toc](#table-of-contents)
 
@@ -202,6 +209,10 @@ In the above example the server is being run on a local IP address on port 8002 
 
 ## How can you help?
 [^toc](#table-of-contents)
+
+#### Verification of Rescue Requests
+
+You can help us with verifying user submitted request from our [Ushahidi volunteer](http://volunteers.keralarescue.in/) portal. Please follow the usermanual available in either [English](https://github.com/IEEEKeralaSection/rescuekerala/files/2300176/Kerala.Rescue.Volunteers.Manual.Draft.pdf) or [Malayalam](https://github.com/IEEEKeralaSection/rescuekerala/files/2299875/default.pdf)
 
 #### Contribution Guidelines
 Check out this [Wiki](https://github.com/IEEEKeralaSection/rescuekerala/wiki/Contribution-Guidelines) for our contribution guidelines.

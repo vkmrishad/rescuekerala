@@ -32,6 +32,11 @@ contrib_status_types =(
     ('ful', 'Fullfilled'),
 )
 
+relief_camp_status = (
+    ('active', 'Active'),
+    ('closed', 'Closed'),
+)
+
 vol_categories = (
     ('dcr', 'Doctor'),
     ('hsv', 'Health Services'),
@@ -272,6 +277,11 @@ class RescueCamp(models.Model):
     taluk = models.CharField(max_length=50,verbose_name="Taluk - താലൂക്ക്")
     village = models.CharField(max_length=50,verbose_name="Village - വില്ലജ്")
     contacts = models.TextField(verbose_name="Phone Numbers - ഫോൺ നമ്പറുകൾ",blank=True,null=True)
+    facilities_available = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Facilities Available (light, kitchen, toilets etc.) - ലഭ്യമായ സൗകര്യങ്ങൾ"
+    )
     data_entry_user = models.ForeignKey(User,models.SET_NULL,blank=True,null=True,help_text="This camp's coordinator page will be visible only to this user")
     map_link = models.CharField(max_length=250, verbose_name='Map link',blank=True,null=True,help_text="Copy and paste the full Google Maps link")
     latlng = models.CharField(max_length=100, verbose_name='GPS Coordinates', blank=True,help_text="Comma separated latlng field. Leave blank if you don't know it")
@@ -286,10 +296,11 @@ class RescueCamp(models.Model):
     sanitary_req = models.TextField(blank=True,null=True,verbose_name="Sanitary - സാനിറ്ററി")
     medical_req = models.TextField(blank=True,null=True,verbose_name="Medical - മെഡിക്കൽ")
     other_req = models.TextField(blank=True,null=True,verbose_name="Other - മറ്റുള്ളവ")
-    facilities_available = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name="Facilities existing, (light, kitchen, toilets), etc - ലഭ്യമായ സൗകര്യങ്ങൾ "
+
+    status = models.CharField(
+        max_length = 10,
+        choices = relief_camp_status,
+        default = 'active',
     )
 
     class Meta:

@@ -26,6 +26,12 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import Http404
 from mainapp.admin import create_csv_response
 
+class CustomForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CustomForm, self).__init__(*args, **kwargs)
+        # for field_name, field in self.fields.items():
+        #     field.widget.attrs['class'] = 'form-control'
+
 PER_PAGE = 100
 PAGE_LEFT = 5
 PAGE_RIGHT = 5
@@ -286,7 +292,7 @@ def logout_view(request):
     # Redirect to camps page instead
     return redirect('/relief_camps')
 
-class PersonForm(forms.ModelForm):
+class PersonForm(CustomForm):
     class Meta:
        model = Person
        fields = [
@@ -313,6 +319,9 @@ class PersonForm(forms.ModelForm):
        rescue_camp_qs = RescueCamp.objects.filter(id=camp_id)
        self.fields['camped_at'].queryset = rescue_camp_qs
        self.fields['camped_at'].initial = rescue_camp_qs.first()
+       # for field_name, field in self.fields.items():
+       #    print(field_name)
+       #    field.widget.attrs['class'] = 'form-control'
 
 class AddPerson(SuccessMessageMixin,LoginRequiredMixin,CreateView):
     login_url = '/login/'
@@ -345,8 +354,17 @@ class AddPerson(SuccessMessageMixin,LoginRequiredMixin,CreateView):
 
 
 class CampRequirementsForm(forms.ModelForm):
+
+
     class Meta:
        model = RescueCamp
+       help_texts = {
+            'food_req': 'Indicate the required items and approximate quantity',
+            'clothing_req': 'Indicate the required items and approximate quantity',
+            'medical_req': 'Indicate the required items and approximate quantity',
+            'sanitary_req': 'Indicate the required items and approximate quantity',
+            'other_req': 'Indicate the required items and approximate quantity',
+        }
        fields = [
         'name',
         'total_people',
@@ -357,8 +375,7 @@ class CampRequirementsForm(forms.ModelForm):
         'clothing_req',
         'sanitary_req',
         'medical_req',
-        'other_req',
-        'facilities_available'
+        'other_req'
         ]
        read_only = ('name',)
        widgets = {
@@ -396,6 +413,7 @@ class CampDetailsForm(forms.ModelForm):
         'taluk',
         'village',
         'contacts',
+        'facilities_available',
         'map_link',
         'latlng',
         ]

@@ -15,8 +15,8 @@
   <h3>Camp details</h3>
 </div>
 
-<form action="" method="get">
-    {{ filter.form.as_p }}
+<form action="" method="get" class="simple-form">
+    {% bootstrap_form filter.form bound_css_class=False %}
     <button class="btn btn-default" type="submit">Show Relief Camps</button>
 </form>
 <div class="">
@@ -36,7 +36,6 @@
       <th>Sanitary Requirements</th>
       <th>Medical Requirements</th>
       <th>Other Requirements</th>
-      <th>Facilities Available</th>
     </tr>
   {% for item in data %}
     <tr valign="top">
@@ -50,7 +49,7 @@
       <td>
         {{item.village}}
       </td>
-      <td>
+      <td class="phone-links">
         {{item.contacts|linebreaks}}
       </td>
       <td>
@@ -79,9 +78,6 @@
       </td>
       <td class="long-col">
         {{item.other_req|linebreaks}}
-      </td>
-      <td class="long-col">
-        {{item.facilities_available|linebreaks}}
       </td>
     </tr>
     {% endfor %}
@@ -113,4 +109,15 @@
 
 
 </div>
+<script>
+  window.onload = function() {
+    $('.phone-links').each(function () {
+      var content = $(this).html();
+      // Convert 10 digit numbers to links
+      links = content.replace(/[0-9 ]{10,15}/g, "<a href=\"tel:$&\">$&</a>");
+      $(this).html(links);
+    })
+  }
+
+</script>
 {% endblock %}
