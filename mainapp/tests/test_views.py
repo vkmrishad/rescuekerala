@@ -80,7 +80,7 @@ class RequestViewTests(TestCase):
         post_data = {
             'district': 'pkd',
             'requestee': 'Rag Sagar',
-            'requestee_phone': '9566233447',
+            'requestee_phone': '95628546420',
             'location': 'Kadankode',
             'latlng': '',
             'latlng_accuracy': ''
