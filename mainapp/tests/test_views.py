@@ -68,19 +68,19 @@ class RequestViewTests(TestCase):
         self.assertFormError(response, 'form', 'requestee_phone', 'This field is required.')
         self.assertFormError(response, 'form', 'requestee', 'This field is required.')
         post_data = {
-            'requestee_phone': '32343434349'
+            'requestee_phone': '9562854604200',
         }
         response = client.post(self.url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'mainapp/request_form.html')
-        self.assertFormError(response, 'form', 'requestee_phone', 'Ensure this value has at most 10 characters (it has 13).')
+        self.assertFormError(response, 'form', 'requestee_phone', 'Ensure this value has at most 11 characters (it has 13).')
 
     def test_creating_request(self):
         client = Client()
         post_data = {
             'district': 'pkd',
             'requestee': 'Rag Sagar',
-            'requestee_phone': '9566233447',
+            'requestee_phone': '95628546420',
             'location': 'Kadankode',
             'latlng': '',
             'latlng_accuracy': ''
@@ -178,4 +178,4 @@ class RegisterContributorViewTests(TestCase):
         self.assertEqual(contributor.name, 'Rag Sagar')
         self.assertEqual(contributor.district, 'pkd')
         self.assertEqual(contributor.phone, '8893845901')
-        self.assertEqual(contributor.address, 'Near Mosque')
+self.assertEqual(contributor.address, 'Near Mosque')
