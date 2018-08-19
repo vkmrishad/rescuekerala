@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 from mainapp.redis_queue import sms_queue
 from mainapp.sms_handler import send_confirmation_sms
 from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp, NGO, \
-    Announcements, ReliefCampData
+    Announcements
 import django_filters
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse
@@ -534,8 +534,3 @@ def camp_requirements_list(request):
     data = paginator.get_page(page)
     return render(request, "mainapp/camp_requirements_list.html", {'filter': filter , 'data' : data})
 
-
-class AddCampData(CreateView):
-    model = ReliefCampData
-    fields = ['description', 'file', 'district', 'phone']
-    success_url = '/submission_success/'
