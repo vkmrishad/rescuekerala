@@ -91,7 +91,7 @@ class NGOAdmin(admin.ModelAdmin):
         body_rows = []
         for ngo in NGO.objects.all():
             row = [
-                getattr(ngo, key) if key != 'area' else ngo.get_area_display()
+                getattr(ngo, key) if key != 'district' else ngo.get_district_display()
                 for key in header_row
             ]
             body_rows.append(row)
