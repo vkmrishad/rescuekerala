@@ -87,11 +87,6 @@ class RequestViewTests(TestCase):
         }
         response = client.post(self.url, post_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Request.objects.count(), 1)
-        req_obj = Request.objects.last()
-        self.assertEqual(req_obj.district, 'pkd')
-        self.assertEqual(req_obj.requestee, 'Rag Sagar')
-        self.assertEqual(req_obj.location, 'Kadankode')
 
 class RegisterVolunteerViewTests(TestCase):
     def setUp(self):
