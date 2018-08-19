@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'django_filters',
+    'storages',
     'raven.contrib.django.raven_compat',
 ]
 
@@ -196,5 +197,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, 'static'),
 )
+bucket_name = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+S3_URL = "https://{}.s3.ap-south-1.amazonaws.com".format(bucket_name,)
 
+
+if os.environ.get('USE_S3'):
+    AWS_STORAGE_BUCKET_NAME=bucket_name
+    AWS_ACCESS_KEY_ID=os.environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY=os.environ.get("AWS_SECRET_ACCESS_KEY")
+    AWS_QUERYSTRING_AUTH=False
+    MEDIA_URL = S3_URL + "/media/"
+    DEFAULT_FILE_STORAGE="storages.backends.s3boto3.S3Boto3Storage"
+else:
+    MEDIA_URL = '/media/'
 ADMIN_SITE_HEADER = "Keralarescue Dashboard"
+MEDIA_ROOT = 'media'

@@ -23,38 +23,66 @@
     {% endif %}
 </div>
 
-{% if camps.count > 0 %}
-<div class="row">
-{% for item in camps %}
-<div class="col-md-4">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{ item.name }}</h3>
-        </div>
-        <div class="panel-body">
-            {{ item.get_district_display }}<br>
-            {{ item.taluk }}<br>
-            {{ item.village }}<br>
-            <br>
-            <div class="btn-group">
-                <a href="/camp/{{ item.id  }}/add_person" class="btn btn-default">
-                  {% bootstrap_icon "user" %}  People Registration
-                </a>
-                <a href="/camp/{{ item.id  }}/details" class="btn btn-default">
-                  {% bootstrap_icon "pencil" %} Requirements
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
-</div>
-{% else  %}
-<div class="text-center text-warning">
-  <h4>
-      No relief camps configured for this user yet.
-  </h4>
-  
+<form action="" method="get">
+    {{ filter.form.as_p }}
+    <button class="btn btn-default" type="submit"> Show Camps {% bootstrap_icon "chevron-right" %}</button>
+</form>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>District</th>
+            <th>Taluk/Village</th>
+            <th>Registration Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+        <tr>
+            <td><strong>{{ item.name }}</strong></td>
+            <td>{{ item.get_district_display }}</td>
+            <td>{{ item.taluk }}<br>{{ item.village }}</td>
+            <td>{{ item.count }}</td>
+            <td>
+                <div class="btn-group">
+                    <a href="/camp/{{ item.id  }}/add_person" class="btn btn-default">
+                        {% bootstrap_icon "user" %}  Register People
+                    </a>
+                    <a href="/camp/{{ item.id  }}/requirements" class="btn btn-default">
+                        {% bootstrap_icon "pencil" %} Requirements
+                    </a>
+                     <a href="/camp/{{ item.id  }}/details" class="btn btn-default">
+                        {% bootstrap_icon "pencil" %} Camp Details
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if data.paginator.num_pages > 1 %}
+<div class="pagination" >
+  <span class="step-links">
+      {% if data.has_previous %}
+          <a href="?page=1&name__icontains={{ request.GET.name__icontains }}&district={{ request.GET.district }}">&laquo; first</a>
+          <a href="?page={{data.previous_page_number}}&name__icontains={{ request.GET.name__icontains }}&district={{ request.GET.district }}">previous</a>
+      {% endif %}
+
+      {% for i in data.paginator.page_range %}
+      {% if data.number == i %}
+        <a class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+      {% else %}
+        <a href="?page={{i}}&name__icontains={{ request.GET.name__icontains }}&district={{ request.GET.district }}">{{ i }}</a>
+      {% endif %}
+      {% endfor %}
+
+      {% if data.has_next %}
+          <a href="?page={{ data.next_page_number }}&name__icontains={{ request.GET.name__icontains }}&district={{ request.GET.district }}">next</a>
+          <a href="?page={{ data.paginator.num_pages }}&name__icontains={{ request.GET.name__icontains }}&district={{ request.GET.district }}">last &raquo;</a>
+      {% endif %}
+  </span>
 </div>
 {% endif %}
 

@@ -3,6 +3,8 @@
 {% load static %}
 
 {% block content %}
+<h1 class="text-center">Request For Help</h1>
+<h2 class="text-center">സഹായം അഭ്യര്‍ഥിക്കാന്‍</h2>
   <form method="post"  class="simple-form">
   {% csrf_token %}
   {% bootstrap_form form %}
@@ -131,6 +133,15 @@
 		event.preventDefault();
 		showLocationPickerForm();
 	})
+
+	$('#id_is_request_for_others').on('change', function(){
+		if($(this).is(":checked")){
+			$('#pac-input').attr('required', 'required');
+		}
+		else{
+			$('#pac-input').removeAttr('required');
+		}
+	});
 
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdPKYd4vwgQY-OmF0Vn22wJu0EcDyi1MQ&libraries=places&callback=initMap"

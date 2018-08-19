@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.base import TemplateView
-from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp, NGO
+from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp, NGO, Announcements
 import django_filters
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse
@@ -11,14 +11,21 @@ from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import logout
+from django.contrib import admin
 from django.shortcuts import redirect
-from django.db.models import Count
+from django.db.models import Count, QuerySet
 from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import Http404
+from mainapp.admin import create_csv_response
+
+PER_PAGE = 100
+PAGE_LEFT = 5
+PAGE_RIGHT = 5
+PAGE_INTERMEDIATE = "50"
 
 class CreateRequest(CreateView):
     model = Request
@@ -63,6 +70,37 @@ class RegisterNGO(CreateView):
     success_url = '/reg_success'
 
 
+def download_ngo_list(request):
+    district = request.GET.get('district', None)
+    filename = 'ngo_list.csv'
+    if district is not None:
+        filename = 'ngo_list_{0}.csv'.format(district)
+        qs = NGO.objects.filter(district=district).order_by('district','name')
+    else:
+        qs = NGO.objects.all().order_by('district','name')
+    header_row = ['Organisation',
+                  'Type',
+                  'Address',
+                  'Name',
+                  'Phone',
+                  'Description',
+                  'District',
+                  'Area',
+                  'Location',
+                  ]
+    body_rows = qs.values_list(
+        'organisation',
+        'organisation_type',
+        'organisation_address',
+        'name',
+        'phone',
+        'description',
+        'district',
+        'area',
+        'location',
+    )
+    return create_csv_response(filename, header_row, body_rows)
+
 class RegisterContributor(CreateView):
     model = Contributor
     fields = ['name', 'district', 'phone', 'address',  'commodities']
@@ -73,9 +111,16 @@ class HomePageView(TemplateView):
     template_name = "home.html"
 
 
+class NgoVolunteerView(TemplateView):
+    template_name = "ngo_volunteer.html"
+
+
+class MapView(TemplateView):
+    template_name = "mapview.html"
+
+
 class ReqSuccess(TemplateView):
     template_name = "mainapp/req_success.html"
-
 
 class RegSuccess(TemplateView):
     template_name = "mainapp/reg_success.html"
@@ -112,10 +157,13 @@ class RescueCampFilter(django_filters.FilterSet):
             self.queryset = self.queryset.none()
 
 def relief_camps(request):
+    return render(request,"mainapp/relief_camps.html")
+
+def relief_camps_list(request):
     filter = RescueCampFilter(request.GET, queryset=RescueCamp.objects.all())
     relief_camps = filter.qs.annotate(count=Count('person')).order_by('district','name').all()
 
-    return render(request, 'mainapp/relief_camps.html', {'filter': filter , 'relief_camps' : relief_camps, 'district_chosen' : len(request.GET.get('district') or '')>0 })
+    return render(request, 'mainapp/relief_camps_list.html', {'filter': filter , 'relief_camps' : relief_camps, 'district_chosen' : len(request.GET.get('district') or '')>0 })
 
 class RequestFilter(django_filters.FilterSet):
     class Meta:
@@ -139,9 +187,12 @@ class RequestFilter(django_filters.FilterSet):
 def request_list(request):
     filter = RequestFilter(request.GET, queryset=Request.objects.all() )
     req_data = filter.qs.order_by('-id')
-    paginator = Paginator(req_data, 100)
+    paginator = Paginator(req_data, PER_PAGE)
     page = request.GET.get('page')
     req_data = paginator.get_page(page)
+    req_data.min_page = req_data.number - PAGE_LEFT
+    req_data.max_page = req_data.number + PAGE_RIGHT
+    req_data.lim_page = PAGE_INTERMEDIATE
     return render(request, 'mainapp/request_list.html', {'filter': filter , "data" : req_data })
 
 def request_details(request, request_id=None):
@@ -223,7 +274,7 @@ class PersonForm(forms.ModelForm):
         'address',
         'notes'
         ]
-       
+
        widgets = {
            'address': forms.Textarea(attrs={'rows':3}),
            'notes': forms.Textarea(attrs={'rows':3}),
@@ -234,27 +285,32 @@ class PersonForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
        camp_id = kwargs.pop('camp_id')
        super(PersonForm, self).__init__(*args, **kwargs)
-       self.fields['camped_at'].queryset = RescueCamp.objects.filter(id=camp_id)
-       self.fields['camped_at'].initial = RescueCamp.objects.filter(id=camp_id).first()
+       rescue_camp_qs = RescueCamp.objects.filter(id=camp_id)
+       self.fields['camped_at'].queryset = rescue_camp_qs
+       self.fields['camped_at'].initial = rescue_camp_qs.first()
 
 class AddPerson(SuccessMessageMixin,LoginRequiredMixin,CreateView):
     login_url = '/login/'
     model = Person
-    template_name='mainapp/add_person.html'  
+    template_name='mainapp/add_person.html'
     form_class = PersonForm
     success_message = "'%(name)s' registered successfully"
 
     def get_success_url(self):
         return reverse('add_person', args=(self.camp_id,))
+
     def dispatch(self, request, *args, **kwargs):
         self.camp_id = kwargs.get('camp_id','')
-        
+
         try:
             self.camp = RescueCamp.objects.get(id=int(self.camp_id))
         except ObjectDoesNotExist:
             raise Http404
-        if request.user!=self.camp.data_entry_user:
-            raise PermissionDenied
+
+        # Commented to allow all users to edit all camps
+        # if request.user!=self.camp.data_entry_user:
+        #     raise PermissionDenied
+
         return super(AddPerson, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -263,11 +319,15 @@ class AddPerson(SuccessMessageMixin,LoginRequiredMixin,CreateView):
         return kwargs
 
 
-class CampDetailsForm(forms.ModelForm):
+class CampRequirementsForm(forms.ModelForm):
     class Meta:
        model = RescueCamp
        fields = [
         'name',
+        'total_people',
+        'total_males',
+        'total_females',
+        'total_infants',
         'food_req',
         'clothing_req',
         'sanitary_req',
@@ -284,19 +344,51 @@ class CampDetailsForm(forms.ModelForm):
            'other_req': forms.Textarea(attrs={'rows':3}),
        }
 
-class CampDetails(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
+class CampRequirements(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     login_url = '/login/'
     model = RescueCamp
-    template_name='mainapp/camp_details.html'  
-    form_class = CampDetailsForm
+    template_name='mainapp/camp_requirements.html'  
+    form_class = CampRequirementsForm
     success_url = '/coordinator_home/'
     success_message = "Updated requirements saved!"
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user!=self.get_object().data_entry_user:
-            raise PermissionDenied
-        return super(CampDetails, self).dispatch(
-            request, *args, **kwargs)
+    # Commented to allow all users to edit all camps
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user!=self.get_object().data_entry_user:
+    #         raise PermissionDenied
+    #     return super(CampDetails, self).dispatch(
+    #         request, *args, **kwargs)
+
+
+class CampDetailsForm(forms.ModelForm):
+    class Meta:
+       model = RescueCamp
+       fields = [
+        'name',
+        'location',
+        'district',
+        'taluk',
+        'village',
+        'contacts',
+        'map_link',
+        'latlng',
+        ]
+
+class CampDetails(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
+    login_url = '/login/'
+    model = RescueCamp
+    template_name='mainapp/camp_details.html'
+    form_class = CampDetailsForm
+    success_url = '/coordinator_home/'
+    success_message = "Details saved!"
+
+    # Commented to allow all users to edit all camps
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user!=self.get_object().data_entry_user:
+    #         raise PermissionDenied
+    #     return super(CampDetails, self).dispatch(
+    #         request, *args, **kwargs)
+
 
 class PeopleFilter(django_filters.FilterSet):
     fields = ['name', 'phone','address','district','notes','gender','camped_at']
@@ -329,7 +421,71 @@ def find_people(request):
     people = paginator.get_page(page)
     return render(request, 'mainapp/people.html', {'filter': filter , "data" : people })
 
+
+def announcements(request):
+    link_data = Announcements.objects.filter(is_pinned=False).order_by('-id').all()
+    pinned_data = Announcements.objects.filter(is_pinned=True).order_by('-id').all()[:5]
+    # As per the discussions orddering by id hoping they would be addded in order
+    paginator = Paginator(link_data, 10)
+    page = request.GET.get('page')
+    link_data = paginator.get_page(page)
+    return render(request, 'announcements.html', {'filter': filter, "data" : link_data,
+                                                  'pinned_data': pinned_data})
+
+
+class CoordinatorCampFilter(django_filters.FilterSet):
+    class Meta:
+        model = RescueCamp
+        fields = {
+            'district' : ['exact'],
+            'name' : ['icontains']
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(CoordinatorCampFilter, self).__init__(*args, **kwargs)
+        if self.data == {}:
+            self.queryset = self.queryset.none()
+
+class CoordinatorCampFilter(django_filters.FilterSet):
+    class Meta:
+        model = RescueCamp
+        fields = {
+            'district' : ['exact'],
+            'name' : ['icontains']
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(CoordinatorCampFilter, self).__init__(*args, **kwargs)
+        if self.data == {}:
+            self.queryset = self.queryset.none()
+
 @login_required(login_url='/login/')
 def coordinator_home(request):
-    camps = RescueCamp.objects.filter(data_entry_user=request.user)
-    return render(request,"mainapp/coordinator_home.html",{'camps':camps})
+    filter = CoordinatorCampFilter(request.GET, queryset=RescueCamp.objects.all())
+    data = filter.qs.annotate(count=Count('person')).order_by('district','name').all()
+    paginator = Paginator(data, 50)
+    page = request.GET.get('page')
+    data = paginator.get_page(page)
+
+    return render(request, "mainapp/coordinator_home.html", {'filter': filter , 'data' : data})
+
+class CampRequirementsFilter(django_filters.FilterSet):
+    class Meta:
+        model = RescueCamp
+        fields = {
+            'district' : ['exact'],
+            'name' : ['icontains']
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CampRequirementsFilter, self).__init__(*args, **kwargs)
+        if self.data == {}:
+            self.queryset = self.queryset.none()
+
+def camp_requirements_list(request):
+    filter = CampRequirementsFilter(request.GET, queryset=RescueCamp.objects.all())
+    camp_data = filter.qs.order_by('name')
+    paginator = Paginator(camp_data, 50)
+    page = request.GET.get('page')
+    data = paginator.get_page(page)
+    return render(request, "mainapp/camp_requirements_list.html", {'filter': filter , 'data' : data})
