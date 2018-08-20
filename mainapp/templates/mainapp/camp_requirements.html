@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+
+{% block content %}  
+  <div class="text-right">
+    <a href="/coordinator_home">Coordinator Home</a> | 
+    <a href="/logout">Logout</a>
+  </div>
+
+  <h3 class="text-center">
+      Camp Requirements |  Required Items with Approximate Quantity <br>
+      ക്യാമ്പിലെ ആവശ്യങ്ങൾ| ഏകദേശം കണക്കാക്കപ്പെടുന്ന അളവ്
+  </h3>
+
+  <div class="text-center text-danger">
+      {% if messages %}
+        {% for message in messages %}
+          <h3>{{ message }}</h3>
+        {% endfor %}
+      {% endif %}
+  </div>
+  <br>
+
+  <form method="post"  class="simple-form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-success btn-lg">
+    Save {% bootstrap_icon "ok" %}
+    </button>
+    {% endbuttons %}
+
+    <p class="text-center">
+        Please update this information whenever you receieve new supplies or need more.
+        <br>
+        നിങ്ങൾ പുതിയ സപ്ലൈസ് സ്വീകരിക്കുകയോ കൂടുതൽ ആവശ്യമുള്ളപ്പോഴോ അപ്ഡേറ്റ് ചെയ്യുക.        
+    </p>
+  </form> 
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>
+  $('#id_gender_0').parents('.radio').hide();
+  $('#id_gender > .radio').removeClass('radio').addClass('radio-inline');
+  </script>
+
+{% endblock %}

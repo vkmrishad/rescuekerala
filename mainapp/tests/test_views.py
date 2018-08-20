@@ -68,12 +68,12 @@ class RequestViewTests(TestCase):
         self.assertFormError(response, 'form', 'requestee_phone', 'This field is required.')
         self.assertFormError(response, 'form', 'requestee', 'This field is required.')
         post_data = {
-            'requestee_phone': '3234343434934'
+            'requestee_phone': '323434343493466'
         }
         response = client.post(self.url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'mainapp/request_form.html')
-        self.assertFormError(response, 'form', 'requestee_phone', 'Ensure this value has at most 10 characters (it has 13).')
+        self.assertFormError(response, 'form', 'requestee_phone', 'Ensure this value has at most 14 characters (it has 15).')
 
     def test_creating_request(self):
         client = Client()

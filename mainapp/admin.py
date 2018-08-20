@@ -3,7 +3,8 @@ import csv
 from django.contrib import admin
 from django.http import HttpResponse
 
-from .models import Request, Volunteer, Contributor, DistrictNeed, DistrictCollection, DistrictManager, vol_categories, RescueCamp, Person, NGO
+from .models import Request, Volunteer, Contributor, DistrictNeed, DistrictCollection, DistrictManager, vol_categories, \
+    RescueCamp, Person, NGO, Announcements, DataCollection
 
 
 def create_csv_response(csv_name, header_row, body_rows):
@@ -57,9 +58,9 @@ class RequestAdmin(admin.ModelAdmin):
 
 
 class VolunteerAdmin(admin.ModelAdmin):
-    actions = ['download_csv']
+    actions = ['download_csv', 'mark_inactive', 'mark_active']
     readonly_fields = ('joined',)
-    list_display = ('name', 'phone', 'organisation', 'joined')
+    list_display = ('name', 'phone', 'organisation', 'joined', 'is_active')
     list_filter = ('district', 'joined',)
 
     def download_csv(self, request, queryset):
@@ -75,6 +76,12 @@ class VolunteerAdmin(admin.ModelAdmin):
         response = create_csv_response('Volunteers', header_row, body_rows)
         return response
 
+    def mark_inactive(self, request, queryset):
+        queryset.update(is_active=False)
+
+    def mark_active(self, request, queryset):
+        queryset.update(is_active=True)
+
 
 class NGOAdmin(admin.ModelAdmin):
     actions = ['download_csv']
@@ -84,21 +91,21 @@ class NGOAdmin(admin.ModelAdmin):
 
     def download_csv(self, request, queryset):
         header_row = [f.name for f in NGO._meta.get_fields()]
-        body_rows = []
-        for ngo in NGO.objects.all():
-            row = [
-                getattr(ngo, key) if key != 'area' else ngo.get_area_display()
-                for key in header_row
-            ]
-            body_rows.append(row)
-
+        body_rows = queryset.values_list()
+        # for ngo in NGO.objects.all():
+        #     row = [
+        #         getattr(ngo, key) if key != 'district' else ngo.get_district_display()
+        #         for key in header_row
+        #     ]
+        #     body_rows.append(row)
         response = create_csv_response('NGOs', header_row, body_rows)
         return response
 
 
 class ContributorAdmin(admin.ModelAdmin):
-    actions = ['download_csv']
+    actions = ['download_csv', 'mark_as_fullfulled', 'mark_as_new']
     list_filter = ('district', 'status',)
+    list_display = ('district', 'name', 'phone', 'address', 'commodities', 'status')
 
     def download_csv(self, request, queryset):
         header_row = [f.name for f in Contributor._meta.get_fields()]
@@ -107,9 +114,70 @@ class ContributorAdmin(admin.ModelAdmin):
         response = create_csv_response('Contributors', header_row, body_rows)
         return response
 
+    def mark_as_fullfulled(self, request, queryset):
+        queryset.update(status='ful')
+        return
+
+    def mark_as_new(self, request, queryset):
+        queryset.update(status='new')
+        return
 
 class RescueCampAdmin(admin.ModelAdmin):
-    list_display = ('district', 'name', 'location')
+    actions = ['download_csv', 'mark_as_closed', 'mark_as_active']
+    list_display = ('district', 'name', 'location', 'status', 'contacts', 'facilities_available', 'total_people',
+                    'total_males', 'total_females', 'total_infants', 'food_req',
+                    'clothing_req', 'sanitary_req', 'medical_req', 'other_req')
+    list_filter = ('district','status')
+
+    def download_csv(self, request, queryset):
+        header_row = ('district', 'name', 'location', 'taluk' , 'village' ,  'status', 'contacts', 'facilities_available', 'total_people',
+                      'total_males', 'total_females', 'total_infants', 'food_req',
+                      'clothing_req', 'sanitary_req', 'medical_req', 'other_req')
+        body_rows = []
+        rescue_camps = queryset.all()
+        for rescue_camp in rescue_camps:
+            row = [getattr(rescue_camp, field) for field in header_row]
+            body_rows.append(row)
+
+        response = create_csv_response('RescueCamp', header_row, body_rows)
+        return response
+
+    def mark_as_closed(self, request, queryset):
+        queryset.update(status='closed')
+        return
+
+    def mark_as_active(self, request, queryset):
+        queryset.update(status='active')
+        return
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(RescueCampAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['data_entry_user'].initial = request.user.id
+        return form
+
+
+class AnnouncementAdmin(admin.ModelAdmin):
+    fields = ['is_pinned', 'priority', 'description', 'image', 'upload']
+
+
+class PersonAdmin(admin.ModelAdmin):
+    actions = ['download_csv']
+    list_display = ('name', 'phone', 'age', 'gender', 'district', 'camped_at')
+
+    def download_csv(self, request, queryset):
+        header_row = ('name', 'phone', 'age', 'sex', 'district_name', 'camped_at')
+        body_rows = []
+        persons = queryset.all()
+        for person in persons:
+            row = [getattr(person, field) for field in header_row]
+            body_rows.append(row)
+
+        response = create_csv_response('People in relief camps', header_row, body_rows)
+        return response
+
+
+class DataCollectionAdmin(admin.ModelAdmin):
+    list_display = ['document_name', 'document', 'tag']
 
 
 admin.site.register(Request, RequestAdmin)
@@ -120,3 +188,6 @@ admin.site.register(DistrictCollection)
 admin.site.register(DistrictManager)
 admin.site.register(RescueCamp, RescueCampAdmin)
 admin.site.register(NGO, NGOAdmin)
+admin.site.register(Announcements, AnnouncementAdmin)
+admin.site.register(Person, PersonAdmin)
+admin.site.register(DataCollection, DataCollectionAdmin)
