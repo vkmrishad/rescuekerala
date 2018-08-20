@@ -7,54 +7,41 @@
 <div class="container text-center">
     <h1 class="main-logo">kerala<span style="font-weight: normal;">rescue  DMO Portal</span></h1>
     <p style="margin-top:60px; margin-bottom: 30px">
-        <i style="font-size:  40px ;"> Request Stats for your District </i><br/>
+        <strong style="font-size:  40px ;"> Camp Stats per District </strong><br/>
   </p>
 
-  <div class="row">
-    <div class="col-xs-4" style="font-size:  30px">
-        Volunteers
-        <br> {{volcount}}
-        <br>Registered</div>
-    <div class="col-xs-4" style="font-size:  30px">
-        Contributors<br>
-    {{conserve}} Served 
-    <br>
-    from {{contotal}}</div>
-    <div class="col-xs-4" style="font-size:  30px">
-            Requests<br>
-        {{reqserve}} Served 
-        <br>
-        from {{reqtotal}}</div>
-  
-  </div>
+  <div id="requests-table" class="table-responsive">
+    <table id="req-table" class="table">
+        <thead>
+          <tr>
+            <th>District - ജില്ല</th>
+            <th>Total Requests</th>
+            <th>Requests Completed</th>
+            <th>Requests Ongoing</th>
+            <th>Total Contributions</th>
+            <th>Contributions Server</th>
+            <th>Total Volunteers</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+        {% for d in data %}
+            <tr>
+              <td>{{ d.district }}</td>
+              <td>{{ d.req }}</td>
+              <td>{{ d.reqd }}</td>
+              <td>{{ d.reqo }}</td>
+              <td>{{ d.con }}</td>
+              <td>{{ d.cons }}</td>
+              <td>{{ d.vol }}</td>
+              
+            </tr>
+        {% endfor %}
+      </tbody>
+      </table>
+    </div>
 
-  <br>
-  <br>
-  <i style="font-size:  40px ;" > Camp Stats for your District </i> <a href="/dmocsv?district={{district}}" > Download as csv</a>
 
-  <div class="container" style="font-size:  30px ; padding-top: 30px">
-
-  
-        Total Camps
-         {{total_camps}}
-   <br>
-        Total People
-        {{total_people}}
-    <br>
-        Total Male
-        {{total_male}}
-    <br>
-        Total Female
-        {{total_female}}
-    <br>
-        Total Infants
-        {{total_infant}}
-    <br>
-        Camps with Med Requirements
-        {{total_medical}}
-
-</div>
-</div>
 </div>
 
   {% endblock %}
