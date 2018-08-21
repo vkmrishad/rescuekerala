@@ -74,4 +74,8 @@ Available statuses:
 * `cls`: 'Can be closed'
 * `otr`: 'Other'
 
+`updated_name` and `updater_phone` are required. `updater_phone` requires the same format as on the request form on keralarescue.in.
+
+If passing `otr`, there's an `other_status` field you can use to send a custom short status description (100 characters).
+
 Expecting 3rd parties to use one of the priorities or `cls` to feed back status after resolution/filtering, and otr in case there's an update that doesn't fit one of these statuses.
