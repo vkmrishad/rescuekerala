@@ -196,7 +196,7 @@ table thead tr th {
     display: block;
     max-width: 800px;
     padding: 0 10px;
-    margin: 20px auto; 
+    margin: 20px auto;
 }
 .priority-index{
     margin-bottom: 10px;
@@ -238,7 +238,7 @@ table thead tr th {
     font-size: 12px;
     padding:2px 8px;
 }
-    .card-time .glyphicon{ 
+    .card-time .glyphicon{
         font-size: 80%;
     }
 .card-priority{
@@ -257,6 +257,11 @@ table thead tr th {
         text-align: left;
     }
 }
+
+.btn.btn-msg{
+    margin: 6px;
+}
+
 /* Card Priority Variation */
 .card.priority-very-important{
         border-top:5px solid #e05959;
@@ -269,7 +274,7 @@ table thead tr th {
     }
     .card.priority-very-important .card-priority{
         font-size: 14px;
-        padding: 4px 12px; 
+        padding: 4px 12px;
         background-color:#e05959;
         -webkit-animation: 1s pinned-message-priority infinite;
         animation: 1s pinned-message-priority infinite;
@@ -280,7 +285,7 @@ table thead tr th {
 
 .card.priority-high{border-color:#ef7831;}
     .card.priority-high .card-priority{background-color:#ef7831;}
-    
+
 .card.priority-medium{border-color:#7ab754;}
     .card.priority-medium .card-priority{background-color:#7ab754;}
 

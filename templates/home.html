@@ -10,7 +10,8 @@
         <i>An initiative by Govt. of Kerala, Kerala State IT Mission and IEEE Kerala Section<br>
         For effective collaboration and communications between authorities, volunteers and public </i><br/>
         <strong><span class="notranslate">ദുരിതാശ്വാസ പ്രവര്‍ത്തനങ്ങളും രക്ഷാ ദൗത്യങ്ങളും ഏകോപിപ്പിക്കാന്‍</span></strong><br/>
-    <b><a href="{% static 'images/msg_cm.jpg' %}">Message from Hon. Chief Minister of Kerala</a></b>
+          <a class="btn btn-info btn-msg" href="{% static 'images/msg_cm.jpg' %}">Message from Hon. Chief Minister of Kerala</a>
+          <a class="btn btn-info btn-msg" href="https://donation.cmdrf.kerala.gov.in/">Donate to Chief Minister's Fund Online</a>
   </p>
     <a href="/request/" class="home-button card" role="button">
         {% bootstrap_icon "grain" %}
@@ -53,7 +54,7 @@
             Maps<br/>
             <span class="ml small notranslate">സഹായം ആവശ്യമായ സ്ഥലങ്ങൾ &amp;<br/>ദുരിതാശ്വാസ ക്യാമ്പുകൾ</span>
         </span>
-    </a> 
+    </a>
     <a href="{% url 'contactus' %}" class="home-button card" role="button">
         {% bootstrap_icon "phone" %}
         <span class="text">
@@ -75,11 +76,21 @@
             <span class="ml small notranslate">അറിയിപ്പുകൾ</span>
         </span>
     </a>
+    <a href="/privatecc" class="home-button card" role="button">
+        {% bootstrap_icon "briefcase" %}
+        <span class="ml text small">
+                Private Relief Centers and<br> Collection Centers<br/>
+            <span class="ml small notranslate"></span>
+        </span>
+    </a>
     <p class="home-info">
         Contact Control Room or Disaster Management Cell or District Administration for any support.<br>
         Volunteers may contact District Project Managers for support related to volunteering and contributions<br>
         <br/>
         <span class="notranslate">സഹായത്തിനായി വൊളന്‍റീയര്‍മാര്‍ തയ്യാറാണ്. സഹായം ആവശ്യമെങ്കില്‍ ഒരോ ജില്ലയിലെയും നിയോഗിക്കപെട്ട ഉദ്യോഗസ്ഥരുമായി ബന്ധപ്പെടാം</span>
     </p>
+  <p class="slack">
+       Our Collaboration Platform (Slack) <a href="https://bit.ly/keralarescueslack">Join</a>
+  </p>   
 </div>
 {% endblock %}
