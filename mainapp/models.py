@@ -11,7 +11,6 @@ import codecs
 from django.core.exceptions import ValidationError
 
 
-
 districts = (
     ('alp','Alappuzha - ആലപ്പുഴ'),
     ('ekm','Ernakulam - എറണാകുളം'),
