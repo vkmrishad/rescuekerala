@@ -7,7 +7,7 @@ from django.views.generic.list import ListView
 from mainapp.redis_queue import sms_queue
 from mainapp.sms_handler import send_confirmation_sms
 from .models import Request, Volunteer, DistrictManager, Contributor, DistrictNeed, Person, RescueCamp, NGO, \
-    Announcements , districts, RequestUpdate, PrivateRescueCamp
+    Announcements , districts, RequestUpdate, PrivateRescueCamp, CsvBulkUpload
 import django_filters
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse
@@ -517,8 +517,8 @@ def logout_view(request):
     return redirect('/relief_camps')
 
 class PersonForm(CustomForm):
-    checkin_date = forms.DateField(input_formats=["%d-%m-%Y"],help_text="Use dd-mm-yyyy format. Eg. 18-08-2018")
-    checkout_date = forms.DateField(input_formats=["%d-%m-%Y"],help_text="Use dd-mm-yyyy format. Eg. 21-08-2018")
+    checkin_date = forms.DateField(    required=False,input_formats=["%d-%m-%Y"],help_text="Use dd-mm-yyyy format. Eg. 18-08-2018")
+    checkout_date = forms.DateField(    required=False,input_formats=["%d-%m-%Y"],help_text="Use dd-mm-yyyy format. Eg. 21-08-2018")
 
     class Meta:
        model = Person
@@ -828,6 +828,25 @@ class ReqUpdateSuccess(TemplateView):
     template_name = "mainapp/request_update_success.html"
 
 
+class CollectionCenterFilter(django_filters.FilterSet):
+    class Meta:
+        model = CollectionCenter
+        fields = {
+            'name': ['icontains'],
+            'address': ['icontains'],
+            'contacts': ['icontains'],
+            'district': ['icontains'],
+            'lsg_name': ['icontains'],
+            'ward_name': ['icontains'],
+            'city': ['icontains'],
+         }
+
+    def __init__(self, *args, **kwargs):
+        super(CollectionCenterFilter, self).__init__(*args, **kwargs)
+        if self.data == {}:
+            self.queryset = self.queryset.none()
+
+
 class CollectionCenterListView(ListView):
     model = CollectionCenter
     paginate_by = PER_PAGE
@@ -835,20 +854,32 @@ class CollectionCenterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['filter'] = CollectionCenterFilter(
+            self.request.GET, queryset=CollectionCenter.objects.all().order_by('-id')
+        )
         return context
+
+
+class CollectionCenterForm(forms.ModelForm):
+    class Meta:
+        model = CollectionCenter
+        fields = [
+            'name',
+            'address',
+            'contacts',
+            'type_of_materials_collecting',
+            'is_inside_kerala',
+            'district',
+            'lsg_name',
+            'ward_name',
+            'city',
+        ]
+        widgets = {
+            'lsg_name': forms.Select(),
+            'ward_name': forms.Select(),
+        }
 
 
 class CollectionCenterView(CreateView):
     model = CollectionCenter
-    fields = [
-        'name',
-        'address',
-        'contacts',
-        'type_of_materials_collecting',
-        'is_inside_kerala',
-        'district',
-        'lsg_type',
-        'lsg_name',
-        'ward_name',
-        'city',
-    ]
+    form_class = CollectionCenterForm

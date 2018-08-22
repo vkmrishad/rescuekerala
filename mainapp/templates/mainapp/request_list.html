@@ -67,7 +67,15 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-center">Registered Request</h1>
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Registered Requests</li>
+  </ol>
+</nav>
+
+<h1 class="text-center">Registered Requests</h1>
 <h2 class="text-center">ഇതു വരെ ആവശ്യപ്പെട്ടവ</h2>
 <form action="" method="get">
        {% bootstrap_form filter.form bound_css_class=False %}
