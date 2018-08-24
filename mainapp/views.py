@@ -103,10 +103,40 @@ class RegisterNGO(CreateView):
               'location']
     success_url = '/reg_success'
 
+
+class RegisterPrivateReliefCampForm(forms.ModelForm):
+    class Meta:
+        model = PrivateRescueCamp
+        fields = [
+            'name',
+            'location',
+            'district',
+            'lsg_name',
+            'ward_name',
+            'contacts',
+            'facilities_available',
+            'map_link',
+            'latlng',
+            'total_people',
+            'total_males',
+            'total_females',
+            'total_infants',
+            'food_req',
+            'clothing_req',
+            'sanitary_req',
+            'medical_req',
+            'other_req'
+        ]
+        widgets = {
+            'lsg_name': forms.Select(),
+            'ward_name': forms.Select()
+        }     
+
+
 class RegisterPrivateReliefCamp(CreateView):
     model = PrivateRescueCamp
-    fields = '__all__'
     success_url = '/pcamp'
+    form_class = RegisterPrivateReliefCampForm
 
 def privatecc(request):
     return render(request,"privatecc.html")

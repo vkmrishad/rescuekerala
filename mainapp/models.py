@@ -396,11 +396,6 @@ def expire_people_filter_form(sender, **kwargs):
 
 
 class PrivateRescueCamp(models.Model):
-    lsg_types = [
-        (LSGTypes.CORPORATION.value, 'Corporation'),
-        (LSGTypes.MUNICIPALITY.value, 'Municipality'),
-        (LSGTypes.GRAMA_PANCHAYATH.value, 'Grama Panchayath')
-    ]
 
     name = models.CharField(max_length=50,verbose_name="Camp Name - ക്യാമ്പിന്റെ പേര്")
     location = models.TextField(verbose_name="Address - അഡ്രസ്",blank=True,null=True)
@@ -408,15 +403,8 @@ class PrivateRescueCamp(models.Model):
         max_length=15,
         choices=districts
     )
-    lsg_type = models.SmallIntegerField(
-        choices=lsg_types,
-        verbose_name='LSG Type - തദ്ദേശ സ്വയംഭരണ സ്ഥാപനം',
-        null=True, blank=True
-    )
     lsg_name = models.CharField(max_length=150, null=True, blank=True, verbose_name="LSG Name - സ്വയംഭരണ സ്ഥാപനത്തിന്റെ പേര്")
     ward_name = models.CharField(max_length=150, null=True, blank=True, verbose_name="Ward - വാർഡ്")
-    is_inside_kerala = models.BooleanField(verbose_name="Center inside kerala? - കേന്ദ്രം കേരളത്തിലാണോ")
-    city = models.CharField(max_length=150, verbose_name="City - നഗരം")
     contacts = models.TextField(verbose_name="Phone Numbers - ഫോൺ നമ്പറുകൾ",blank=True,null=True)
     facilities_available = models.TextField(
         blank=True,
