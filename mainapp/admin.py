@@ -1,5 +1,5 @@
 import csv
-
+import codecs
 from django.contrib import admin
 from django.core.validators import EMPTY_VALUES
 from django.http import HttpResponse
@@ -22,6 +22,7 @@ def create_csv_response(csv_name, header_row, body_rows):
     """
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(csv_name)
+    response.write(codecs.BOM_UTF8)
 
     writer = csv.writer(response)
     writer.writerow(header_row)
@@ -202,13 +203,13 @@ class PersonAdmin(admin.ModelAdmin):
         for person in persons:
             row = [getattr(person, field) for field in header_row]
             body_rows.append(row)
-
         response = create_csv_response('People in relief camps', header_row, body_rows)
         return response
 
 
 class DataCollectionAdmin(admin.ModelAdmin):
     list_display = ['document_name', 'document', 'tag']
+
 
 class CsvBulkUploadAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
