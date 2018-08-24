@@ -81,7 +81,6 @@
 		{% if user.is_authenticated %}
 			<th>Location - സ്ഥലം</th>
 			<th>Organization - സംഘടന</th>
-			<th>Phone - ഫോണ്‍ നമ്പര്‍</th>
 		{% endif %}
         <th>Area - സന്നദ്ധസേവനം</th>
       </tr>
@@ -94,7 +93,6 @@
 		  {% if user.is_authenticated %}
 			  <td>{{ req.address }}</td>
 			  <td>{{ req.organisation }}</td>
-			  <td><a href="tel:{{ req.requestee_phone }}" >{{ req.phone }}</a></td>
 		  {% endif %}
           <td>{{ req.get_area_display }}</td>
         </tr>
