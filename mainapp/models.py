@@ -501,6 +501,9 @@ class Person(models.Model):
     class Meta:
         verbose_name = 'Relief: Inmate'
         verbose_name_plural = "Relief: Inmates"
+        indexes = [
+            models.Index(fields=['name', '-added_at',]),
+        ]
 
     def __str__(self):
         return self.name
