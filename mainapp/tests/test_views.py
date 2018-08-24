@@ -4,7 +4,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from mainapp.models import Request, Volunteer, Contributor, NGO
-from mainapp.models import DistrictNeed
+from mainapp.models import DistrictNeed, RescueCamp
 
 
 class TemplateViewTests(TestCase):
@@ -59,6 +59,10 @@ class TemplateViewTests(TestCase):
         self.check_template_view_response(
             '/ngo-volunteer/', 'ngo_volunteer.html')
 
+    def test_loading_relief_camps_view(self):
+        self.check_template_view_response(
+            '/relief_camps/', "mainapp/relief_camps.html")
+
 
 class RequestViewTests(TestCase):
     def setUp(self):
@@ -96,7 +100,8 @@ class RequestViewTests(TestCase):
         response = client.post(self.url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'mainapp/request_form.html')
-        self.assertFormError(response, 'form', 'requestee_phone', 'Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>')
+        self.assertFormError(response, 'form', 'requestee_phone',
+                             'Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>')
 
     def test_creating_request(self):
         client = Client()
@@ -344,3 +349,141 @@ class RegisterContributorViewTests(TestCase):
         self.assertEqual(contributor.district, 'pkd')
         self.assertEqual(contributor.phone, '8893845901')
         self.assertEqual(contributor.address, 'Near Mosque')
+
+
+class ReliefCampsListTest(TestCase):
+    def setUp(self):
+        self.url = '/relief_camps_list/'
+
+    def test_loading_blank_page(self):
+        client = Client()
+        response = client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'mainapp/relief_camps_list.html')
+        self.assertEqual(response.context['relief_camps'].count(), 0)
+        self.assertEqual(response.context['district_chosen'], False)
+        # print(response.context['filter'].form)
+        self.assertIn('select name="district"', str(
+            response.context['filter'].form))
+
+    def test_validation_errors_in_query(self):
+        client = Client()
+        response = client.get(self.url, {'district': 'ernakulam'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'mainapp/relief_camps_list.html')
+        self.assertIn('Select a valid choice. ernakulam is not one of the available choices.', str(
+            response.context['filter'].form))
+
+    def test_empty_query(self):
+        client = Client()
+        response = client.get(self.url, {'district': 'tcr'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'mainapp/relief_camps_list.html')
+        self.assertIn('<option value="tcr" selected>',
+                      str(response.context['filter'].form))
+        self.assertEqual(response.context['relief_camps'].count(), 0)
+
+    def test_data_consistency_in_query(self):
+        client = Client()
+        rescue_camp_tcr_1_data = {
+            'name': 'taikutam lp school',
+            'district': 'tcr',
+            'taluk': 'chalakudy',
+            'village': 'kadukutty',
+        }
+        rescue_camp_tcr_1_model = RescueCamp.objects.create(
+            **rescue_camp_tcr_1_data)
+        rescue_camp_tcr_2_data = {
+            'name': 'anamanada lp school',
+            'district': 'tcr',
+            'taluk': 'chalakudy',
+            'village': 'anamanada',
+        }
+        rescue_camp_tcr_2_model = RescueCamp.objects.create(
+            **rescue_camp_tcr_2_data)
+        rescue_camp_tcr_3_data = {
+            'name': 'maloor lp school',
+            'district': 'tcr',
+            'taluk': 'chalakudy',
+            'village': 'maloor',
+        }
+        rescue_camp_tcr_3_model = RescueCamp.objects.create(
+            **rescue_camp_tcr_3_data)
+        # _ = Person.objects.create(name='person1', camped_at=rescue_camp_tcr_1_model)
+        # _ = Person.objects.create(name='person2', camped_at=rescue_camp_tcr_1_model)
+        # _ = Person.objects.create(name='person3', camped_at=rescue_camp_tcr_2_model)
+        # _ = Person.objects.create(name='person4', camped_at=rescue_camp_tcr_3_model)
+        # _ = Person.objects.create(name='person5', camped_at=rescue_camp_tcr_3_model)
+        response = client.get(self.url, {'district': 'tcr'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'mainapp/relief_camps_list.html')
+        self.assertEqual(response.context['relief_camps'].count(), 3)
+        self.assertIn('<option value="tcr" selected>',
+                      str(response.context['filter'].form))
+        # for person in Person.objects.all():
+        #     print({'person': person, 'camp': person.camped_at, 'cmp_dist': person.camped_at.district})
+        # a,b,c = RescueCamp.objects.annotate(count=Count('person', distinct=True))
+        # print(a.count, b.count, c.count)
+        # for item in response.context['relief_camps']:
+        #     print(item, item.person_set.all())
+
+
+class ReliefCampsDataTest(TestCase):
+    def setUp(self):
+        self.url = '/relief_camps/data/'
+
+    def test_empty_query(self):
+        client = Client()
+        response = client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['data']), 0)
+        self.assertEqual(response.json()['meta']['offset'], 0)
+        self.assertEqual(response.json()['meta']['limit'], 300)
+        self.assertEqual(response.json()['meta']['description'],
+        'select * from mainapp_rescuecamp where id > offset order by id limit 300')
+        self.assertEqual(response.json()['meta']['last_record_id'], 0)
+
+    def test_a_offset_query(self):
+        client = Client()
+        bulk_entries = []
+        for i in range(100):
+            bulk_entries.append(RescueCamp(**{
+                    'name': 'maloor lp school-' + str(i),
+                    'district': 'tcr',
+                    'taluk': 'chalakudy-' + str(i),
+                    'village': 'maloor-' + str(i),
+            }))
+        _ = RescueCamp.objects.bulk_create(bulk_entries)
+        response = client.get(self.url, {'offset': 10})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['data']), 90)
+        self.assertEqual(response.json()['data'][0]['id'], 11)
+        self.assertEqual(response.json()['meta']['offset'], 10)
+        self.assertEqual(response.json()['meta']['limit'], 300)
+        self.assertEqual(response.json()[
+                         'meta']['description'], 'select * from mainapp_rescuecamp where id > offset order by id limit 300')
+        self.assertEqual(response.json()['meta']['last_record_id'], 100)
+        # RescueCamp.objects.all().delete()
+
+
+    def test_limit_query(self):
+        client = Client()
+        bulk_entries = []
+        for i in range(400):
+            bulk_entries.append(RescueCamp(**{
+                    'name': 'maloor lp school' + str(i),
+                    'district': 'tcr',
+                    'taluk': 'chalakudy' + str(i),
+                    'village': 'maloor' + str(i),
+            }))
+        _ = RescueCamp.objects.bulk_create(bulk_entries)
+        response = client.get(self.url, {'offset': 110})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['data']), 300)
+        self.assertEqual(response.json()['meta']['offset'], 110)
+        self.assertEqual(response.json()['meta']['limit'], 300)
+        self.assertEqual(response.json()[
+                         'meta']['description'], 'select * from mainapp_rescuecamp where id > offset order by id limit 300')
+        self.assertEqual(response.json()['meta']['last_record_id'], 500)
+        # RescueCamp.objects.all().delete()
+

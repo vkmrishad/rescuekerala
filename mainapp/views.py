@@ -418,7 +418,10 @@ def relief_camps_data(request):
         offset = int(request.GET.get('offset'))
     except:
         offset = 0
-    last_record = RescueCamp.objects.latest('id')
+    if RescueCamp.objects.exists():
+        last_record = RescueCamp.objects.latest('id')
+    else:
+        last_record = RescueCamp(id=0)
     relief_camp_data = (RescueCamp.objects.filter(id__gt=offset).order_by('id')[:300]).values()
     description = 'select * from mainapp_rescuecamp where id > offset order by id limit 300'
     response = {'data': list(relief_camp_data), 'meta': {'offset': offset, 'limit': 300, 'description': description,'last_record_id': last_record.id}}
