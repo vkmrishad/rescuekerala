@@ -472,6 +472,7 @@ class Person(models.Model):
     )
 
     unique_identifier = models.CharField(max_length=32, default='', blank=True)
+    is_dup = models.BooleanField(default=False)
 
     @property
     def sex(self):
