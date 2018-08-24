@@ -27,7 +27,6 @@
   {% bootstrap_form filter.form bound_css_class=False %}
 </form>
 
-{% if relief_camps.count > 0 %}
 <div>
   <table class="table">
     <tr>
@@ -38,7 +37,7 @@
       <th>Contact Numbers</th>
       <th>Total People</th>
     </tr>
-    {% for item in relief_camps_pag %}
+    {% for item in data %}
     <tr valign="top">
       <td><strong>{{ item.get_district_display }}</strong></td>
       <td>
@@ -61,34 +60,30 @@
     {% endfor %}
   </table>
 
-  <!-- pagination part of  -->
-  {% if relief_camps_pag.has_other_pages %}
-  <ul class="pagination">
-    {% if relief_camps_pag.has_previous %}
-      <li><a href="?page={{ relief_camps_pag.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-    {% endif %}
-    {% for i in relief_camps_pag.paginator.page_range %}
-      {% if relief_camps_pag.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if users.has_next %}
-      <li><a href="?page={{ relief_camps_pag.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
+  {% if data.paginator.num_pages > 1 %}
+  <div class="pagination" >
+    <span class="step-links">
+        {% if data.has_previous %}
+            <a href="?page=1&&district={{ request.GET.district }}">&laquo; first</a>
+            <a href="?page={{data.previous_page_number}}&district={{ request.GET.district }}">previous</a>
+        {% endif %}
+
+        {% for i in data.paginator.page_range %}
+        {% if data.number == i %}
+          <a class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+        {% else %}
+          <a href="?page={{i}}&district={{ request.GET.district }}">{{ i }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if data.has_next %}
+            <a href="?page={{ data.next_page_number }}&district={{ request.GET.district }}">next</a>
+            <a href="?page={{ data.paginator.num_pages }}&district={{ request.GET.district }}">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+  {% endif %}
 </div>
-{% elif district_chosen  %}
-<div class="text-center text-warning">
-  No relief camps listed for this district yet.
-</div>
-{% endif %}
 
 <script>
   window.onload = function() {
