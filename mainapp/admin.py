@@ -8,7 +8,7 @@ from mainapp.csvimporter import import_inmate_file
 
 
 from .models import Request, Volunteer, Contributor, DistrictNeed, DistrictCollection, DistrictManager, vol_categories, \
-    RescueCamp, Person, NGO, Announcements, DataCollection , PrivateRescueCamp , CollectionCenter, CsvBulkUpload
+    RescueCamp, Person, NGO, Announcements, DataCollection , PrivateRescueCamp , CollectionCenter, CsvBulkUpload, RequestUpdate
 
 
 def create_csv_response(csv_name, header_row, body_rows):
@@ -235,3 +235,4 @@ admin.site.register(Announcements, AnnouncementAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(DataCollection, DataCollectionAdmin)
 admin.site.register(CsvBulkUpload, CsvBulkUploadAdmin)
+admin.site.register(RequestUpdate)
