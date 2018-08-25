@@ -1,5 +1,6 @@
 import csv
 import io
+# import chardet
 from django.test import TestCase, Client
 from django.urls import reverse
 
@@ -259,12 +260,14 @@ class DownloadNGOListViewTests(TestCase):
             'organisation_type': 'NGO',
             'description': 'to help poor',
             'location': 'chalakudy',
-            'district': 'tcr',
+            'district': 'tcr',  
         }
         _ = NGO.objects.create(**ngo_data_tcr)
         client = Client()
         response = client.get(self.url, data={'district': 'ekm'})
-        content = response.content.decode('utf-8')
+        # print(response)
+        # print(chardet.detect(response.content), "===========>")
+        content = response.content.decode('UTF-8-SIG')
         cvs_reader = csv.reader(io.StringIO(content))
         body = list(cvs_reader)
         headers = body.pop(0)
@@ -300,7 +303,7 @@ class DownloadNGOListViewTests(TestCase):
         _ = NGO.objects.create(**ngo_data)
         client = Client()
         response = client.get(self.url)
-        content = response.content.decode('utf-8')
+        content = response.content.decode('UTF-8-SIG')
         cvs_reader = csv.reader(io.StringIO(content))
         body = list(cvs_reader)
         _ = body.pop(0)
@@ -339,7 +342,8 @@ class RegisterContributorViewTests(TestCase):
             'district': 'pkd',
             'phone': '8893845901',
             'address': 'Near Mosque',
-            'contribution_type': 'Shirts, Torches'
+            'contribution_type': 'clt',
+            'contrib_details': '10 shirts'
         }
         response = client.post(self.url, post_data)
         self.assertEqual(response.status_code, 302)
@@ -360,8 +364,8 @@ class ReliefCampsListTest(TestCase):
         response = client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'mainapp/relief_camps_list.html')
-        self.assertEqual(response.context['relief_camps'].count(), 0)
-        self.assertEqual(response.context['district_chosen'], False)
+        self.assertEqual(len(response.context['data']), 0)
+        # self.assertEqual(response.context['district_chosen'], False)
         # print(response.context['filter'].form)
         self.assertIn('select name="district"', str(
             response.context['filter'].form))
@@ -381,7 +385,7 @@ class ReliefCampsListTest(TestCase):
         self.assertTemplateUsed(response, 'mainapp/relief_camps_list.html')
         self.assertIn('<option value="tcr" selected>',
                       str(response.context['filter'].form))
-        self.assertEqual(response.context['relief_camps'].count(), 0)
+        self.assertEqual(len(response.context['data']), 0)
 
     def test_data_consistency_in_query(self):
         client = Client()
@@ -417,7 +421,8 @@ class ReliefCampsListTest(TestCase):
         response = client.get(self.url, {'district': 'tcr'})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'mainapp/relief_camps_list.html')
-        self.assertEqual(response.context['relief_camps'].count(), 3)
+        # print()
+        self.assertEqual(len(response.context['data']), 3)
         self.assertIn('<option value="tcr" selected>',
                       str(response.context['filter'].form))
         # for person in Person.objects.all():
