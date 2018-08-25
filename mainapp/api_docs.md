@@ -1,6 +1,6 @@
 ## Available Endpoints
 
-### GET /data
+### GET /data (Removed)
 
 Returns paginated requests from the mainapp_requests table.
 
