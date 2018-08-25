@@ -2,11 +2,6 @@
 {% load bootstrap3 %}
 
 {% block content %}
-
-<form action="{%url 'requestlistview' %}" method="get" class="text-center">
-       {% bootstrap_form filter.form bound_css_class=False %}
-       <input value="View requests" class="btn btn-primary" type="submit" />
- </form>
  <div class="table-responsive">
   <table class="table">
     <thead>
@@ -47,6 +42,9 @@
       </tr>
       <tr>
         <td><b> Summary of request : </b></td><td>{{ req.summarise | linebreaks }}</td>
+      </tr>
+      <tr>
+        <td><b> Status of request : </b></td><td>{{ req.get_status_display }}</td>
       </tr>
       <tr>
         <td><b> Date : </b></td><td>{{ req.dateadded }}</td>

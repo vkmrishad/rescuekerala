@@ -360,7 +360,7 @@ def contributors(request):
 
 
 def request_list(request):
-    filter = RequestFilter(request.GET, queryset=Request.objects.all() )
+    filter = RequestFilter(request.GET, queryset=Request.objects.exclude(status='sup') )
     req_data = filter.qs.order_by('-id')
     paginator = Paginator(req_data, PER_PAGE)
     page = request.GET.get('page')
@@ -545,6 +545,7 @@ def dmoinfo(request):
 
         data.append({ "district" : i[1], "req" : req  , "reqo" : reqo , "reqd" : reqd , "con" : con , "cons" : cons , "vol" : vol})
     return render(request ,"dmoinfo.html",{"data" : data} )
+
 def error(request):
     error_text = request.GET.get('error_text')
     return render(request , "mainapp/error.html", {"error_text" : error_text})
@@ -654,6 +655,7 @@ class CampRequirementsForm(forms.ModelForm):
            'other_req': forms.Textarea(attrs={'rows':3}),
        }
 
+
 class CampRequirements(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     login_url = '/login/'
     model = RescueCamp
@@ -684,6 +686,7 @@ class CampDetailsForm(forms.ModelForm):
         'map_link',
         'latlng',
         ]
+
 
 class CampDetails(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     login_url = '/login/'
@@ -802,6 +805,7 @@ class CampRequirementsFilter(django_filters.FilterSet):
         super(CampRequirementsFilter, self).__init__(*args, **kwargs)
         if self.data == {}:
             self.queryset = self.queryset.none()
+
 
 class VolunteerConsent(UpdateView):
     model = Volunteer
