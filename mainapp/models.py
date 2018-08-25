@@ -131,7 +131,7 @@ class Request(models.Model):
     #  If it is enabled no need to consider lat and lng
     is_request_for_others = models.BooleanField(
         verbose_name='Requesting for others - മറ്റൊരാൾക്ക് വേണ്ടി അപേക്ഷിക്കുന്നു  ', default=False,
-        help_text="If it is enabled, no need to consider lat and lng")
+        help_text="If this is checked, enter other's location from the \'Enter location manually\' button at the bottom")
 
     needwater = models.BooleanField(verbose_name='Water - വെള്ളം')
     needfood = models.BooleanField(verbose_name='Food - ഭക്ഷണം')
@@ -325,7 +325,7 @@ class DistrictCollection(models.Model):
         verbose_name_plural = 'District: Collections'
 
     def __str__(self):
-        return self.get_district_display()    
+        return self.get_district_display()
 
 
 class RescueCamp(models.Model):
