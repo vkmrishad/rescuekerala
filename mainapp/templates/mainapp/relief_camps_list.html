@@ -86,7 +86,7 @@
 </div>
 
 <script>
-  window.onload = function() {
+  window.addEventListener('load', function() {
     $('.phone-links').each(function () {
       var content = $(this).html();
       // Convert 10 digit numbers to links
@@ -97,7 +97,9 @@
     $("#id_district").change(() => {
       $("#relief-comps-form").submit();
     })
-  }
+
+    $('#id_district').selectize();
+  });
 
 </script>
 

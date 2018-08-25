@@ -35,11 +35,12 @@
   </table>
 </div>
 <script>
-  window.onload = function() {
+  window.addEventListener('load', function() {
     $("#id_district").change(() => {
       $("#find-contact-form").submit();
     })
-  }
+    $('#id_district').selectize();
+  });
 
 </script>
 {% endblock %}

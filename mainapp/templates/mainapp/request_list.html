@@ -140,9 +140,10 @@
  </div>
 
  <script>
-   window.onload = function() {
+   window.addEventListener('load', function() {
      $("input.search").keyup(search);
-   }
+     $('#id_district').selectize();
+   });
 
    function search() {
      $("#req-table").find("tr").each(function(i,el) {

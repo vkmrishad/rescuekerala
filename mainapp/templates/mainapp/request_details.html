@@ -4,7 +4,7 @@
 {% block content %}
 
 <form action="{%url 'requestlistview' %}" method="get" class="text-center">
-       {{ filter.form.as_p }}
+       {% bootstrap_form filter.form bound_css_class=False %}
        <input value="View requests" class="btn btn-primary" type="submit" />
  </form>
  <div class="table-responsive">

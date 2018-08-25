@@ -54,8 +54,8 @@
     $('#id_gender > .radio').removeClass('radio').addClass('radio-inline');
     $('#id_camped_at').attr('readonly', true);
     $("#id_checkin_date").prop('required',false); 
-    $("#id_checkout_date").prop('required',false); 
-
+    $("#id_checkout_date").prop('required',false);
+    $('#id_district').selectize(); 
     $('#id_checkin_date, #id_checkout_date').datepicker({  
       format: "dd-mm-yyyy",
       todayHighlight: true
