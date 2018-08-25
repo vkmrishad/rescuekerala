@@ -211,6 +211,10 @@ class DataCollectionAdmin(admin.ModelAdmin):
     list_display = ['document_name', 'document', 'tag']
 
 
+class RequestUpdateAdmin(admin.ModelAdmin):
+    readonly_fields = ['request']
+
+
 class CsvBulkUploadAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -235,4 +239,4 @@ admin.site.register(Announcements, AnnouncementAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(DataCollection, DataCollectionAdmin)
 admin.site.register(CsvBulkUpload, CsvBulkUploadAdmin)
-admin.site.register(RequestUpdate)
+admin.site.register(RequestUpdate, RequestUpdateAdmin)
