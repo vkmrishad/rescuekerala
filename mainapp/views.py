@@ -130,7 +130,7 @@ class RegisterPrivateReliefCampForm(forms.ModelForm):
         widgets = {
             'lsg_name': forms.Select(),
             'ward_name': forms.Select()
-        }     
+        }
 
 
 class RegisterPrivateReliefCamp(CreateView):
@@ -260,7 +260,7 @@ class RescueCampFilter(django_filters.FilterSet):
 def relief_camps(request):
     return render(request,"mainapp/relief_camps.html")
 
-  
+
 def missing_persons(request):
     return render(request, "mainapp/missing_persons.html")
 
@@ -339,7 +339,6 @@ class ContribFilter(django_filters.FilterSet):
                     'status' : ['exact'],
                     'address' : ['icontains'],
                     'contrib_details' : ['icontains'],
-                    'status' : ['icontains'],
                  }
 
     def __init__(self, *args, **kwargs):
