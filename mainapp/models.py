@@ -324,6 +324,9 @@ class DistrictCollection(models.Model):
         verbose_name = 'District: Collection'
         verbose_name_plural = 'District: Collections'
 
+    def __str__(self):
+        return self.get_district_display()    
+
 
 class RescueCamp(models.Model):
     name = models.CharField(max_length=50,verbose_name="Camp Name - ക്യാമ്പിന്റെ പേര്")

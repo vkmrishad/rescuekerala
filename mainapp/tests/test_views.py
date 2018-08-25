@@ -4,8 +4,7 @@ import io
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from mainapp.models import Request, Volunteer, Contributor, NGO
-from mainapp.models import DistrictNeed, RescueCamp
+from mainapp.models import Request, Volunteer, Contributor, NGO, DistrictNeed, RescueCamp
 
 
 class TemplateViewTests(TestCase):
