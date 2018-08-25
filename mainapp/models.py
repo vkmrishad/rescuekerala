@@ -234,6 +234,7 @@ class NGO(models.Model):
         max_length=500,
         verbose_name="Preferred Location to Volunteer"
     )
+    website_url = models.CharField(max_length=300,verbose_name="Enter your website link",default='')
     is_spoc = models.BooleanField(default=False, verbose_name="Is point of contact")
     joined = models.DateTimeField(auto_now_add=True)
 
