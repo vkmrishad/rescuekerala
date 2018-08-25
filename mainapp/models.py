@@ -13,6 +13,7 @@ from django.db.models.signals import post_save
 from django.core.cache.utils import make_template_fragment_key
 from django.core.cache import cache
 from django.dispatch import receiver
+from django.utils import timezone
 
 
 districts = (
@@ -182,6 +183,9 @@ class Request(models.Model):
 
     def __str__(self):
         return self.get_district_display() + ' ' + self.location
+
+    def is_old(self):
+        return self.dateadded < (timezone.now() - timezone.timedelta(days=2))
 
 
 class Volunteer(models.Model):
