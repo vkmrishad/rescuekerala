@@ -99,8 +99,8 @@ def volunteerdata(request):
 
 class RegisterNGO(CreateView):
     model = NGO
-    fields = ['organisation', 'organisation_type','organisation_address', 'name', 'phone', 'description', 'area',
-              'location']
+    fields = ['organisation', 'organisation_type','organisation_address', 'name', 'phone', 'area',
+              'description','website_url','location']
     success_url = '/reg_success'
 
 
@@ -318,7 +318,6 @@ class NGOFilter(django_filters.FilterSet):
     class Meta:
         model = NGO
         fields = {
-                    'district' : ['exact'],
                     'area' : ['icontains']
                  }
 

@@ -202,14 +202,15 @@ class RegisterNGOViewTests(TestCase):
     def test_creation(self):
         client = Client()
         post_data = {
-            'name': 'Rag Sagar',
-            'phone': '8893845901',
             'organisation': 'smc',
-            'area': 'plw',
             'organisation_address': 'Near mosque',
             'organisation_type': 'NGO',
+            'name': 'Rag Sagar',
+            'phone': '8893845901',
+            'area': 'plw',
             'description': 'to help poor',
-            'location': 'chalakudy'
+            'website_url': 'https://smc.org.in/',
+            'location': 'chalakudy',
         }
         response = client.post(self.url, post_data)
         self.assertEqual(response.status_code, 302)
@@ -259,7 +260,7 @@ class DownloadNGOListViewTests(TestCase):
             'organisation_type': 'NGO',
             'description': 'to help poor',
             'location': 'chalakudy',
-            'district': 'tcr',  
+            'district': 'tcr',
         }
         _ = NGO.objects.create(**ngo_data_tcr)
         client = Client()
@@ -490,4 +491,3 @@ class ReliefCampsDataTest(TestCase):
                          'meta']['description'], 'select * from mainapp_rescuecamp where id > offset order by id limit 300')
         self.assertEqual(response.json()['meta']['last_record_id'], 500)
         # RescueCamp.objects.all().delete()
-
