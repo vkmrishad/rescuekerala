@@ -43,6 +43,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ALLOWED_HOSTS = ['127.0.0.1', 'keralarescue.herokuapp.com', 'keralarescue.in', 'www.keralarescue.in', 'localhost']
 ALLOWED_HOSTS = get_list(os.environ.get('ALLOWED_HOSTS'))
+INTERNAL_IPS = get_list(os.environ.get('INTERNAL_IPS'))
 
 
 RAVEN_CONFIG = {
@@ -74,6 +75,10 @@ INSTALLED_APPS = [
     'ddtrace.contrib.django',
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -84,6 +89,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+
 
 ROOT_URLCONF = 'floodrelief.urls'
 
