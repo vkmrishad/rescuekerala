@@ -122,6 +122,7 @@ https://github.com/vigneshhari/keralarescue_test_settings for local testing.
 <summary>4. Install dependencies.</summary>
 
         pip3 install -r requirements.txt
+        pip3 install -r requirements_debug.txt
 </details>
 
 <details>
@@ -132,7 +133,7 @@ https://github.com/vigneshhari/keralarescue_test_settings for local testing.
 
 <details>
 <summary>6. Setup static files.</summary>
-        
+
         python3 manage.py collectstatic
 </details>
 
