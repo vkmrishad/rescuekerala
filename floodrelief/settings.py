@@ -43,7 +43,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ALLOWED_HOSTS = ['127.0.0.1', 'keralarescue.herokuapp.com', 'keralarescue.in', 'www.keralarescue.in', 'localhost']
 ALLOWED_HOSTS = get_list(os.environ.get('ALLOWED_HOSTS'))
-INTERNAL_IPS = get_list(os.environ.get('INTERNAL_IPS'))
+INTERNAL_IPS = get_list(os.environ.setdefault('INTERNAL_IPS', ''))
 
 
 RAVEN_CONFIG = {
