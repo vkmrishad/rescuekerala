@@ -1,14 +1,39 @@
 import csv
 import codecs
+
 from django.contrib import admin
 from django.core.validators import EMPTY_VALUES
 from django.http import HttpResponse
+from django.http import StreamingHttpResponse
+
 from mainapp.redis_queue import bulk_csv_upload_queue
 from mainapp.csvimporter import import_inmate_file
-
-
 from .models import Request, Volunteer, Contributor, DistrictNeed, DistrictCollection, DistrictManager, vol_categories, \
     RescueCamp, Person, NGO, Announcements, DataCollection , PrivateRescueCamp , CollectionCenter, CsvBulkUpload, RequestUpdate
+
+"""
+Helper function for streaming csv downloads
+An object that implements just the write method of the file-like
+interface.
+"""
+class Echo:
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
+"""A view that streams a large CSV file."""
+def create_streaming_csv_response(header_row, queryset, filename):
+    # header_row = ('name', 'phone', 'age', 'sex', 'district_name', 'camped_at', 'status')
+    objects = queryset.all()
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+
+    response = StreamingHttpResponse((writer.writerow([getattr(object, field) for field in header_row]) for object in objects.iterator()),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(filename)
+    response.write(codecs.BOM_UTF8)
+    return response
 
 
 def create_csv_response(csv_name, header_row, body_rows):
@@ -185,7 +210,7 @@ class AnnouncementAdmin(admin.ModelAdmin):
 
 
 class PersonAdmin(admin.ModelAdmin):
-    actions = ['download_csv']
+    actions = ['download_csv', 'stream_csv']
     list_display = ('name', 'camped_at', 'added_at', 'phone', 'age', 'gender', 'camped_at_district', 'camped_at_taluk')
     ordering = ('-added_at',)
     list_filter = ('camped_at__district', 'camped_at__taluk')
@@ -205,6 +230,10 @@ class PersonAdmin(admin.ModelAdmin):
             body_rows.append(row)
         response = create_csv_response('People in relief camps', header_row, body_rows)
         return response
+
+    def stream_csv(self, request, queryset):
+        header_row = ('name', 'phone', 'age', 'sex', 'district_name', 'camped_at', 'status')
+        return create_streaming_csv_response(header_row, queryset, filename='inmates')
 
 
 class DataCollectionAdmin(admin.ModelAdmin):
