@@ -32,7 +32,7 @@ def create_streaming_csv_response(header_row, queryset, filename):
     response = StreamingHttpResponse((writer.writerow([getattr(object, field) for field in header_row]) for object in objects.iterator()),
                                      content_type="text/csv")
     response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(filename)
-    response.write(codecs.BOM_UTF8)
+    # response.write(codecs.BOM_UTF8)
     return response
 
 
