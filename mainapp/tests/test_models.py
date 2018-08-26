@@ -11,7 +11,7 @@ class ModelTest(TestCase):
 			location= "Ernakulam",
 			latlng= "",
 			latlng_accuracy="")
-		self.assertEqual(str(request), request.get_district_display()+' '+request.location)
+		self.assertEqual(str(request), '#' + str(request.id) + ' ' + request.get_district_display() + ' ' + request.location)
 	def test_volunteer_string_representation(self):
 		volunteer = Volunteer(
 			name="Kavit",
@@ -28,7 +28,7 @@ class ModelTest(TestCase):
 			organisation_address="1222 CC",
 			name="Save Lives")
 		self.assertEqual(str(ngo), ngo.name)
-		
+
 	def test_contributor_string_representation(self):
 		contributor = Contributor(
 			district="pkd",
@@ -74,4 +74,4 @@ class ModelTest(TestCase):
 			gender="male",
 			address="near railway crossing",
 			district="pkd")
-		self.assertEqual(str(person), person.name) 
+		self.assertEqual(str(person), person.name)
