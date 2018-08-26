@@ -869,8 +869,13 @@ class RequestUpdateView(CreateView):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
+
 class ReqUpdateSuccess(TemplateView):
     template_name = "mainapp/request_update_success.html"
+
+
+class ReportFindPerson(TemplateView):
+    template_name = "mainapp/missing_and_finding_persons.html"
 
 
 class CollectionCenterFilter(django_filters.FilterSet):

@@ -182,7 +182,7 @@ class Request(models.Model):
         verbose_name_plural = 'Rescue:Requests'
 
     def __str__(self):
-        return self.get_district_display() + ' ' + self.location
+        return '#' + str(self.id) + ' ' + self.get_district_display() + ' ' + self.location
 
     def is_old(self):
         return self.dateadded < (timezone.now() - timezone.timedelta(days=2))
