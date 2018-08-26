@@ -99,8 +99,8 @@ def volunteerdata(request):
 
 class RegisterNGO(CreateView):
     model = NGO
-    fields = ['organisation', 'organisation_type','organisation_address', 'name', 'phone', 'area',
-              'description','website_url','location']
+    fields = ['organisation', 'organisation_type', 'organisation_address', 'district', 'name', 'phone', 'area',
+              'description', 'website_url', 'location']
     success_url = '/reg_success'
 
 

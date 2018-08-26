@@ -204,6 +204,7 @@ class RegisterNGOViewTests(TestCase):
         post_data = {
             'organisation': 'smc',
             'organisation_address': 'Near mosque',
+            'district': 'ekm',
             'organisation_type': 'NGO',
             'name': 'Rag Sagar',
             'phone': '8893845901',
