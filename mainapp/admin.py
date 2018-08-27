@@ -155,7 +155,7 @@ class RescueCampAdmin(admin.ModelAdmin):
     list_display = ('district', 'name', 'location', 'status', 'contacts', 'facilities_available', 'total_people',
                     'total_males', 'total_females', 'total_infants', 'food_req',
                     'clothing_req', 'sanitary_req', 'medical_req', 'other_req')
-    list_filter = ('district','status')
+    list_filter = ('district','status', 'taluk')
     search_fields = ['name']
 
     def download_inmates(self, request, queryset):
