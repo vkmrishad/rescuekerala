@@ -3,6 +3,7 @@ import uuid
 from enum import Enum
 import csv
 import codecs
+from hashlib import md5
 
 from django.db import models
 from django.core.validators import RegexValidator
@@ -518,6 +519,17 @@ class Person(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        identifier_str = (str(self.camped_at.id) +
+            self.name +
+            self.address +
+            self.phone +
+            str(self.age) +
+            str(self.gender) +
+            self.notes).encode('utf-8')
+        self.unique_identifier =  md5(identifier_str).hexdigest()
+        super(Person, self).save(*args, **kwargs)
 
 
 def upload_to(instance, filename):
