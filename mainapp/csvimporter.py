@@ -5,10 +5,6 @@ import csv
 import codecs
 
 
-def hash_person(personobj):
-    person_string = str(personobj.camped_at.id) + personobj.name + personobj.address + str(personobj.phone) + str(personobj.age) + str(personobj.gender) + personobj.notes  
-    result = hashlib.md5(person_string.encode('utf-8'))
-    return result.hexdigest()
 
 
 def parsedate(str):
@@ -70,7 +66,7 @@ def import_inmate_file(csvid):
                age = datum.get("age", "").strip()
 
 
-            p_obj = Person(
+            Person(
                 name = datum.get("name", ""),
                 phone = datum.get("phone", ""),
                 age = int(float(age)),
@@ -82,10 +78,7 @@ def import_inmate_file(csvid):
                 status = "new",
                 checkin_date = parsedate(datum.get("checkin_date", None)),
                 checkout_date = parsedate(datum.get("checkout_date", None))
-            )
-            unique_val = hash_person(p_obj)
-            if(Person.objects.filter(unique_identifier = unique_val).count() == 0 ):
-                p_obj.save()
+            ).save()
         CsvBulkUpload.objects.filter(id = csvid).update(is_completed = True)
         CsvBulkUpload.objects.filter(id = csvid).update(failure_reason = '')
     except Exception as e:
