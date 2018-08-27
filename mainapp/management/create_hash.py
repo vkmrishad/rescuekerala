@@ -13,3 +13,5 @@ for person in people:
         person.notes).encode('utf-8')
     person.unique_identifier =  md5(identifier_str).hexdigest()
     person.save()
+    if person.id%10000 == 0:
+        print(person.id)

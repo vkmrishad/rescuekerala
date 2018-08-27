@@ -529,7 +529,9 @@ class Person(models.Model):
             str(self.gender) +
             self.notes).encode('utf-8')
         self.unique_identifier =  md5(identifier_str).hexdigest()
-        super(Person, self).save(*args, **kwargs)
+        if(Person.objects.filter(unique_identifier = self.unique_identifier).count() == 0 ):
+            super(Person, self).save(*args, **kwargs)
+        
 
 
 def upload_to(instance, filename):
