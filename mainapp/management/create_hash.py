@@ -5,13 +5,15 @@ people = Person.objects.all()
 
 for person in people:
     identifier_str = (str(person.camped_at.id) +
-        person.name +
-        person.address +
-        person.phone +
+        str(person.name) +
+        str(person.address) +
+        str(person.phone) +
         str(person.age) +
         str(person.gender) +
-        person.notes).encode('utf-8')
+        str(person.notes)).encode('utf-8')
     person.unique_identifier =  md5(identifier_str).hexdigest()
     person.save()
     if person.id%10000 == 0:
         print(person.id)
+
+#exec(open('mainapp/management/create_hash.py').read())
