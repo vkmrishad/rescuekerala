@@ -132,8 +132,7 @@ class Request(models.Model):
     latlng_accuracy = models.CharField(max_length=100, verbose_name='GPS Accuracy - GPS കൃത്യത ', blank=True)
     #  If it is enabled no need to consider lat and lng
     is_request_for_others = models.BooleanField(
-        verbose_name='Requesting for others - മറ്റൊരാൾക്ക് വേണ്ടി അപേക്ഷിക്കുന്നു  ', default=False,
-        help_text="If this is checked, enter other's location from the \'Enter location manually\' button at the bottom")
+        verbose_name='Requesting for others - മറ്റൊരാൾക്ക് വേണ്ടി അപേക്ഷിക്കുന്നു ', default=False)
 
     needwater = models.BooleanField(verbose_name='Water - വെള്ളം')
     needfood = models.BooleanField(verbose_name='Food - ഭക്ഷണം')
