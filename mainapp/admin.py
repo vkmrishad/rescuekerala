@@ -214,6 +214,7 @@ class PersonAdmin(admin.ModelAdmin):
     list_display = ('name', 'camped_at', 'added_at', 'phone', 'age', 'gender', 'camped_at_district', 'camped_at_taluk')
     ordering = ('-added_at',)
     list_filter = ('camped_at__district', 'camped_at__taluk')
+    search_fields = ['camped_at__district', 'camped_at__name', 'name']
 
     def camped_at_taluk(self, instance):
         return instance.camped_at.taluk
@@ -252,7 +253,7 @@ class CsvBulkUploadAdmin(admin.ModelAdmin):
         )
     autocomplete_fields = ['camp']
     readonly_fields = ['is_completed', 'failure_reason']
-    list_display = ['name','camp','is_completed']
+    list_display = ['name', 'camp', 'is_completed']
     search_fields = ['camp']
 
 admin.site.register(Request, RequestAdmin)
