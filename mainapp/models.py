@@ -1,15 +1,20 @@
 import os
 import uuid
 from enum import Enum
+import csv
+import codecs
+from hashlib import md5
 
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.urls import reverse
-import csv
-import codecs
 from django.core.exceptions import ValidationError
-
+from django.db.models.signals import post_save
+from django.core.cache.utils import make_template_fragment_key
+from django.core.cache import cache
+from django.dispatch import receiver
+from django.utils import timezone
 
 
 districts = (
@@ -96,6 +101,15 @@ person_status = (
     ('closed', 'Closed')
 )
 
+contribution_types = (
+    ('fod', 'Food'),
+    ('med', 'Medicines'),
+    ('shl', 'Shelter'),
+    ('clt', 'Clothing'),
+    ('sny', 'Sanitary materials'),
+    ('oth', 'Others')
+)
+
 class LSGTypes(Enum):
     CORPORATION = 0
     MUNICIPALITY = 1
@@ -119,7 +133,7 @@ class Request(models.Model):
     #  If it is enabled no need to consider lat and lng
     is_request_for_others = models.BooleanField(
         verbose_name='Requesting for others - മറ്റൊരാൾക്ക് വേണ്ടി അപേക്ഷിക്കുന്നു  ', default=False,
-        help_text="If it is enabled, no need to consider lat and lng")
+        help_text="If this is checked, enter other's location from the \'Enter location manually\' button at the bottom")
 
     needwater = models.BooleanField(verbose_name='Water - വെള്ളം')
     needfood = models.BooleanField(verbose_name='Food - ഭക്ഷണം')
@@ -169,7 +183,10 @@ class Request(models.Model):
         verbose_name_plural = 'Rescue:Requests'
 
     def __str__(self):
-        return self.get_district_display() + ' ' + self.location
+        return '#' + str(self.id) + ' ' + self.get_district_display() + ' ' + self.location
+
+    def is_old(self):
+        return self.dateadded < (timezone.now() - timezone.timedelta(days=2))
 
 
 class Volunteer(models.Model):
@@ -222,6 +239,7 @@ class NGO(models.Model):
         max_length=500,
         verbose_name="Preferred Location to Volunteer"
     )
+    website_url = models.CharField(max_length=300,verbose_name="Enter your website link",default='')
     is_spoc = models.BooleanField(default=False, verbose_name="Is point of contact")
     joined = models.DateTimeField(auto_now_add=True)
 
@@ -245,11 +263,16 @@ class Contributor(models.Model):
     phone = models.CharField(max_length=14, verbose_name="Phone - ഫോണ്‍ നമ്പര്‍", validators=[phone_number_regex])
 
     address = models.TextField(verbose_name="Address - വിലാസം")
-    commodities = models.TextField(verbose_name="What you can contribute. ( സംഭാവന ചെയ്യാന്‍ ഉദ്ദേശിക്കുന്ന സാധനങ്ങള്‍ ) -- Eg: Shirts, torches etc ")
+    contrib_details = models.TextField(verbose_name="Details of contribution Eg: 10 shirts", default='')
     status = models.CharField(
         max_length = 10,
         choices = contrib_status_types,
         default = 'new'
+    )
+    contribution_type = models.CharField(
+    max_length=3,
+    choices=contribution_types,
+    default='oth'
     )
 
     class Meta:
@@ -306,6 +329,9 @@ class DistrictCollection(models.Model):
     class Meta:
         verbose_name = 'District: Collection'
         verbose_name_plural = 'District: Collections'
+
+    def __str__(self):
+        return self.get_district_display()
 
 
 class RescueCamp(models.Model):
@@ -372,12 +398,13 @@ class RescueCamp(models.Model):
         return self.name
 
 
+@receiver(post_save, sender=RescueCamp)
+def expire_people_filter_form(sender, **kwargs):
+    cache_key = make_template_fragment_key("person_filter_form")
+    cache.delete(cache_key)
+
+
 class PrivateRescueCamp(models.Model):
-    lsg_types = [
-        (LSGTypes.CORPORATION.value, 'Corporation'),
-        (LSGTypes.MUNICIPALITY.value, 'Municipality'),
-        (LSGTypes.GRAMA_PANCHAYATH.value, 'Grama Panchayath')
-    ]
 
     name = models.CharField(max_length=50,verbose_name="Camp Name - ക്യാമ്പിന്റെ പേര്")
     location = models.TextField(verbose_name="Address - അഡ്രസ്",blank=True,null=True)
@@ -385,15 +412,8 @@ class PrivateRescueCamp(models.Model):
         max_length=15,
         choices=districts
     )
-    lsg_type = models.SmallIntegerField(
-        choices=lsg_types,
-        verbose_name='LSG Type - തദ്ദേശ സ്വയംഭരണ സ്ഥാപനം',
-        null=True, blank=True
-    )
     lsg_name = models.CharField(max_length=150, null=True, blank=True, verbose_name="LSG Name - സ്വയംഭരണ സ്ഥാപനത്തിന്റെ പേര്")
     ward_name = models.CharField(max_length=150, null=True, blank=True, verbose_name="Ward - വാർഡ്")
-    is_inside_kerala = models.BooleanField(verbose_name="Center inside kerala? - കേന്ദ്രം കേരളത്തിലാണോ")
-    city = models.CharField(max_length=150, verbose_name="City - നഗരം")
     contacts = models.TextField(verbose_name="Phone Numbers - ഫോൺ നമ്പറുകൾ",blank=True,null=True)
     facilities_available = models.TextField(
         blank=True,
@@ -460,7 +480,8 @@ class Person(models.Model):
         default = None,
     )
 
-    unique_identifier = models.CharField(max_length=32, default='')
+    unique_identifier = models.CharField(max_length=32, default='', blank=True)
+    is_dup = models.BooleanField(default=False)
 
     @property
     def sex(self):
@@ -492,9 +513,25 @@ class Person(models.Model):
     class Meta:
         verbose_name = 'Relief: Inmate'
         verbose_name_plural = "Relief: Inmates"
+        indexes = [
+            models.Index(fields=['name', '-added_at',]),
+        ]
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        identifier_str = (str(self.camped_at.id) +
+            str(self.name) +
+            str(self.address) +
+            str(self.phone) +
+            str(self.age) +
+            str(self.gender) +
+            str(self.notes)).encode('utf-8')
+        self.unique_identifier =  md5(identifier_str).hexdigest()
+        if(Person.objects.filter(unique_identifier = self.unique_identifier).count() == 0 ):
+            super(Person, self).save(*args, **kwargs)
+
 
 
 def upload_to(instance, filename):
@@ -595,6 +632,7 @@ class CollectionCenter(models.Model):
     is_inside_kerala = models.BooleanField(default=True, verbose_name="Center inside kerala? - കേന്ദ്രം കേരളത്തിലാണോ")
     city = models.CharField(null=True, blank=True, max_length=150, verbose_name="City - നഗരം")
     added_at = models.DateTimeField(auto_now_add=True)
+    map_link = models.TextField( verbose_name='Map(Cordinate links) link',blank=True,null=True,help_text="Copy and paste the full Google Maps link")
 
     def __str__(self):
         return self.name
@@ -606,8 +644,9 @@ class CollectionCenter(models.Model):
 class CsvBulkUpload(models.Model):
     name = models.CharField(max_length=20)
     csv_file = models.FileField(upload_to=upload_to)
-    is_completed = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False, verbose_name="Import Status")
     camp = models.ForeignKey(RescueCamp, models.CASCADE)
+    failure_reason = models.CharField(max_length=150, default='', blank=True, verbose_name="Reason of failure, if failed")
 
     def full_clean(self, *args, **kwargs):
         self.csv_file.open(mode="rb")

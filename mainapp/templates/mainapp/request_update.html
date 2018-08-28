@@ -35,7 +35,7 @@
         <td><b> Requestee : </b></td><td>{{ view.original_request.requestee }}</td>
       </tr>	  
       <tr>
-        <td><b> Contact number : </b></td><td><a href="tel:{{ req.requestee_phone }}" >{{ view.original_request.requestee_phone }}</a></td>
+        <td><b> Contact number : </b></td><td><a href="tel:{{ view.original_request.requestee_phone }}" >{{ view.original_request.requestee_phone }}</a></td>
       </tr>
       <tr>
         <td><b> Summary of request : </b></td><td>{{ view.original_request.summarise | linebreaks }}</td>

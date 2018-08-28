@@ -29,48 +29,60 @@ def import_inmate_file(csvid):
     from mainapp.models import Person, RescueCamp, CsvBulkUpload
 
     upload = CsvBulkUpload.objects.get(id = csvid)
-    upload.csv_file.open(mode="rb")
-    new_data = csv.DictReader(codecs.iterdecode(upload.csv_file.file, 'utf-8'))
 
-    for datum in new_data:
-        '''
-        try:
-            identifier_str = (datum.get("phone", "") + datum.get("name","") + datum.get("age",0)).encode('utf-8')
-            identifier = md5(identifier_str).hexdigest()
-            #this will fail. we should deal with the removed unique_identifier
-            p = Person.objects.get(unique_identifier=identifier)
-        except ValueError as e:
-            print("Invalid camp ID. row = "+ str(datum))
-        except RescueCamp.DoesNotExist as e:
-            print("Camp does not exist. row = "+ str(datum))
+    try:
+        upload.csv_file.open(mode="rb")
+        new_data = csv.DictReader(codecs.iterdecode(upload.csv_file.file, 'utf-8'))
 
-        except Person.DoesNotExist:
-        '''
-        gender = 2
-        if( len(datum.get("gender", "")) > 0 ):
-            if(datum.get("gender", "")[0] == "m" or datum.get("gender", "")[0] == "M"):
-                gender = 0
-            elif(datum.get("gender", "")[0] == "f" or datum.get("gender", "")[0] == "F"):
-                gender = 1
-        age = '-1'
-        if(datum.get("age", "").strip() != ""):
-           age = datum.get("age", "").strip()
+        for datum in new_data:
+            '''
+            try:
+                identifier_str = (datum.get("phone", "") + datum.get("name","") + datum.get("age",0)).encode('utf-8')
+                identifier = md5(identifier_str).hexdigest()
+                #this will fail. we should deal with the removed unique_identifier
+                p = Person.objects.get(unique_identifier=identifier)
+            except ValueError as e:
+                print("Invalid camp ID. row = "+ str(datum))
+            except RescueCamp.DoesNotExist as e:
+                print("Camp does not exist. row = "+ str(datum))
+
+            except Person.DoesNotExist:
+            '''
+            empty = 0
+            header = ["name" , "phone" , "address" , "notes" , "district" , "checkin_date" , "checkout_date" , "gender" , "age" ]
+            for i in header:
+                if(datum.get(i, "").strip() == ""):empty+=1
+            if(empty == len(header)):
+                continue
+
+            gender = 2
+            if( len(datum.get("gender", "")) > 0 ):
+                if(datum.get("gender", "")[0] == "m" or datum.get("gender", "")[0] == "M"):
+                    gender = 0
+                elif(datum.get("gender", "")[0] == "f" or datum.get("gender", "")[0] == "F"):
+                    gender = 1
+            age = '-1'
+            if(datum.get("age", "").strip() != ""):
+               age = datum.get("age", "").strip()
 
 
-        Person(
-            name = datum.get("name", ""),
-            phone = datum.get("phone", ""),
-            age = age,
-            gender = gender,
-            address = datum.get("address", ""),
-            notes = datum.get("notes", ""),
-            camped_at = upload.camp ,
-            district = datum.get("district", "").lower(),
-            status = "new",
-            checkin_date = parsedate(datum.get("checkin_date", None)),
-            checkout_date = parsedate(datum.get("checkout_date", None))
-        ).save()
-    CsvBulkUpload.objects.filter(id = csvid).update(is_completed = True)
+            Person(
+                name = datum.get("name", ""),
+                phone = datum.get("phone", ""),
+                age = int(float(age)),
+                gender = gender,
+                address = datum.get("address", ""),
+                notes = datum.get("notes", ""),
+                camped_at = upload.camp ,
+                district = datum.get("district", "").lower(),
+                status = "new",
+                checkin_date = parsedate(datum.get("checkin_date", None)),
+                checkout_date = parsedate(datum.get("checkout_date", None))
+            ).save()
+        CsvBulkUpload.objects.filter(id = csvid).update(is_completed = True)
+        CsvBulkUpload.objects.filter(id = csvid).update(failure_reason = '')
+    except Exception as e:
+        CsvBulkUpload.objects.filter(id = csvid).update(failure_reason=(getattr(e, 'message', repr(e))))
 
 
 

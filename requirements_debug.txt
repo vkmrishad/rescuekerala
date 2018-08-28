@@ -1,0 +1,2 @@
+django_debug_toolbar
+pympler

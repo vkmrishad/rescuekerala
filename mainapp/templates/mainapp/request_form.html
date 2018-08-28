@@ -12,7 +12,7 @@
 </nav>
 
 <h1 class="text-center">Request For Help</h1>
-<h2 class="text-center">സഹായം അഭ്യര്‍ഥിക്കാന്‍</h2>
+<h2 class="text-center">സഹായം അഭ്യർത്ഥിക്കാൻ</h2>
   <form method="post"  class="simple-form">
   {% csrf_token %}
   {% bootstrap_form form %}
@@ -94,8 +94,9 @@
 		console.log("Your browser does not allow some javascript programs.\nError Message : " + err.message)
 	}
 
-	window.onload = function(){
-        $("#id_requestee_phone").attr('type', 'text');
+	window.addEventListener('load', function(){
+		$('#id_district').selectize();
+        $("#id_requestee_phone").attr('type', 'number');
 		var gpsField = document.getElementById('id_latlng');
 		var gpsAccuracyField = document.getElementById('id_latlng_accuracy');
 		gpsField.readOnly = true;
@@ -128,19 +129,19 @@
 		$('#instructionModal').on('hidden.bs.modal', function (e) {
 		  navigator.geolocation.getCurrentPosition(success, error, options);
 		})
-    try {
-      navigator.permissions.query({'name': 'geolocation'}).then(
-        function(result) {
-          switch (result.state) {
-            case 'prompt': $('#instructionModal').modal('show'); break;
-            case 'granted': navigator.geolocation.getCurrentPosition(success, error, options); break;
-          }
-      })
-    } catch (err) {
-      // capture cases that don't have navigator or navigator.permissions
-      $('#instructionModal').modal('show');
-    }
-	}
+    	try {
+	      navigator.permissions.query({'name': 'geolocation'}).then(
+	        function(result) {
+	          switch (result.state) {
+	            case 'prompt': $('#instructionModal').modal('show'); break;
+	            case 'granted': navigator.geolocation.getCurrentPosition(success, error, options); break;
+	          }
+	      })
+	    } catch (err) {
+	      // capture cases that don't have navigator or navigator.permissions
+	      $('#instructionModal').modal('show');
+	    }
+	});
 
 	function showLocationPickerForm(){
 		$('#placepicker-form').show();
@@ -163,9 +164,9 @@
 	});
 
   </script>
+  <script src="{% static 'js/placepicker.js' %}"
+  async defer></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdPKYd4vwgQY-OmF0Vn22wJu0EcDyi1MQ&libraries=places&callback=initMap"
-        async defer></script>
- <script src="{% static 'js/placepicker.js' %}"
         async defer></script>
 
 {% endblock %}

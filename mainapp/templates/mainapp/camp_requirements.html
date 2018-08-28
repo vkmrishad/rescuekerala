@@ -40,8 +40,11 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
-  $('#id_gender_0').parents('.radio').hide();
-  $('#id_gender > .radio').removeClass('radio').addClass('radio-inline');
+  window.addEventListener('load', function() {
+    $('#id_gender_0').parents('.radio').hide();
+    $('#id_gender > .radio').removeClass('radio').addClass('radio-inline');
+    $('#id_district').selectize();
+  });
   </script>
 
 {% endblock %}

@@ -3,7 +3,14 @@
 
 {% block content %}
 
-
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="../privatecc/">Private Relief & Collection Centres</a></li>
+    <li class="breadcrumb-item active" aria-current="page">View Private Relief Camps</li>
+  </ol>
+</nav>
 
 <h2 align=center>
   Private Camp List
@@ -26,20 +33,25 @@
 <table class="table table-hover">
     <thead>
         <tr>
+            <th>Center ID</th>
             <th>Name</th>
             <th>District</th>
             <th>LSG Type/LSG Name</th>
             <th>Total People</th>
+            <th>Contact Information</th>
             <th>Details</th>
         </tr>
     </thead>
     <tbody>
         {% for item in data %}
         <tr>
+            <td>{{ item.id }}</td>
             <td><strong>{{ item.name }}</strong></td>
             <td>{{ item.get_district_display }}</td>
             <td>{{ item.get_lsg_type_display }}<br>{{ item.lsg_name }}</td>
             <td>{{ item.total_people }}</td>
+            <td>{{ item.contacts }}</td>
+
             <td>
                 <div class="btn-group">
                      <a href="/pcampdet?id={{ item.id  }}" class="btn btn-default">

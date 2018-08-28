@@ -117,15 +117,17 @@
 
 
 </div>
-<script>
-  window.onload = function() {
+<script type="text/javascript">
+  window.addEventListener('load', function() {
     $('.phone-links').each(function () {
       var content = $(this).html();
       // Convert 10 digit numbers to links
       links = content.replace(/[0-9 ]{10,15}/g, "<a href=\"tel:$&\">$&</a>");
       $(this).html(links);
     })
-  }
-
-</script>
+    $(function() {
+      $('#id_district').selectize();
+    });
+  });
+</script> 
 {% endblock %}

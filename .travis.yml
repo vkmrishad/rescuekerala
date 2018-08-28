@@ -15,6 +15,7 @@ env:
     - SECRET_KEY=not_so_secret
       B_DATABASE_URL="postgres://postgres@localhost/test_db"
       ALLOWED_HOSTS= "localhost"
+      INTERNAL_IPS= "localhost"
       SENTRY_DSN=""
       REDIS_URL="redis://localhost:6379"
       

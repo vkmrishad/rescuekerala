@@ -31,6 +31,7 @@ import csv
 from dateutil import parser
 import calendar
 from mainapp.models import CollectionCenter
+from collections import OrderedDict
 
 
 class CustomForm(forms.ModelForm):
@@ -98,14 +99,44 @@ def volunteerdata(request):
 
 class RegisterNGO(CreateView):
     model = NGO
-    fields = ['organisation', 'organisation_type','organisation_address', 'name', 'phone', 'description', 'area',
-              'location']
+    fields = ['organisation', 'organisation_type', 'organisation_address', 'district', 'name', 'phone', 'area',
+              'description', 'website_url', 'location']
     success_url = '/reg_success'
+
+
+class RegisterPrivateReliefCampForm(forms.ModelForm):
+    class Meta:
+        model = PrivateRescueCamp
+        fields = [
+            'name',
+            'location',
+            'district',
+            'lsg_name',
+            'ward_name',
+            'contacts',
+            'facilities_available',
+            'map_link',
+            'latlng',
+            'total_people',
+            'total_males',
+            'total_females',
+            'total_infants',
+            'food_req',
+            'clothing_req',
+            'sanitary_req',
+            'medical_req',
+            'other_req'
+        ]
+        widgets = {
+            'lsg_name': forms.Select(),
+            'ward_name': forms.Select()
+        }
+
 
 class RegisterPrivateReliefCamp(CreateView):
     model = PrivateRescueCamp
-    fields = '__all__'
     success_url = '/pcamp'
+    form_class = RegisterPrivateReliefCampForm
 
 def privatecc(request):
     return render(request,"privatecc.html")
@@ -163,7 +194,7 @@ def download_ngo_list(request):
 
 class RegisterContributor(CreateView):
     model = Contributor
-    fields = ['name', 'district', 'phone', 'address',  'commodities']
+    fields = ['name', 'district', 'phone', 'address', 'contribution_type', 'contrib_details']
     success_url = '/contrib_success/'
 
 
@@ -230,12 +261,17 @@ def relief_camps(request):
     return render(request,"mainapp/relief_camps.html")
 
 
+def missing_persons(request):
+    return render(request, "mainapp/missing_persons.html")
+
+
 def relief_camps_list(request):
     filter = RescueCampFilter(request.GET, queryset=RescueCamp.objects.filter(status='active'))
     relief_camps = filter.qs.annotate(count=Count('person')).order_by('district','name').all()
-
-    return render(request, 'mainapp/relief_camps_list.html', {'filter': filter , 'relief_camps' : relief_camps, 'district_chosen' : len(request.GET.get('district') or '')>0 })
-
+    paginator = Paginator(relief_camps,50)
+    page = request.GET.get('page')
+    data = paginator.get_page(page)
+    return render(request, 'mainapp/relief_camps_list.html', {'filter': filter, 'data': data})
 
 class RequestFilter(django_filters.FilterSet):
     class Meta:
@@ -282,7 +318,6 @@ class NGOFilter(django_filters.FilterSet):
     class Meta:
         model = NGO
         fields = {
-                    'district' : ['exact'],
                     'area' : ['icontains']
                  }
 
@@ -300,9 +335,9 @@ class ContribFilter(django_filters.FilterSet):
                     'district' : ['exact'],
                     'name' : ['icontains'],
                     'phone' : ['exact'],
+                    'status' : ['exact'],
                     'address' : ['icontains'],
-                    'commodities' : ['icontains'],
-                    'status' : ['icontains'],
+                    'contrib_details' : ['icontains'],
                  }
 
     def __init__(self, *args, **kwargs):
@@ -325,7 +360,7 @@ def contributors(request):
 
 
 def request_list(request):
-    filter = RequestFilter(request.GET, queryset=Request.objects.all() )
+    filter = RequestFilter(request.GET, queryset=Request.objects.exclude(status='sup') )
     req_data = filter.qs.order_by('-id')
     paginator = Paginator(req_data, PER_PAGE)
     page = request.GET.get('page')
@@ -381,7 +416,10 @@ def relief_camps_data(request):
         offset = int(request.GET.get('offset'))
     except:
         offset = 0
-    last_record = RescueCamp.objects.latest('id')
+    if RescueCamp.objects.exists():
+        last_record = RescueCamp.objects.latest('id')
+    else:
+        last_record = RescueCamp(id=0)
     relief_camp_data = (RescueCamp.objects.filter(id__gt=offset).order_by('id')[:300]).values()
     description = 'select * from mainapp_rescuecamp where id > offset order by id limit 300'
     response = {'data': list(relief_camp_data), 'meta': {'offset': offset, 'limit': 300, 'description': description,'last_record_id': last_record.id}}
@@ -507,6 +545,7 @@ def dmoinfo(request):
 
         data.append({ "district" : i[1], "req" : req  , "reqo" : reqo , "reqd" : reqd , "con" : con , "cons" : cons , "vol" : vol})
     return render(request ,"dmoinfo.html",{"data" : data} )
+
 def error(request):
     error_text = request.GET.get('error_text')
     return render(request , "mainapp/error.html", {"error_text" : error_text})
@@ -616,6 +655,7 @@ class CampRequirementsForm(forms.ModelForm):
            'other_req': forms.Textarea(attrs={'rows':3}),
        }
 
+
 class CampRequirements(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     login_url = '/login/'
     model = RescueCamp
@@ -646,6 +686,7 @@ class CampDetailsForm(forms.ModelForm):
         'map_link',
         'latlng',
         ]
+
 
 class CampDetails(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     login_url = '/login/'
@@ -731,6 +772,9 @@ class PrivateCampFilter(django_filters.FilterSet):
             'name' : ['icontains']
         }
 
+
+
+
     def __init__(self, *args, **kwargs):
         super(PrivateCampFilter, self).__init__(*args, **kwargs)
         if self.data == {}:
@@ -761,6 +805,7 @@ class CampRequirementsFilter(django_filters.FilterSet):
         super(CampRequirementsFilter, self).__init__(*args, **kwargs)
         if self.data == {}:
             self.queryset = self.queryset.none()
+
 
 class VolunteerConsent(UpdateView):
     model = Volunteer
@@ -824,22 +869,30 @@ class RequestUpdateView(CreateView):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
+
 class ReqUpdateSuccess(TemplateView):
     template_name = "mainapp/request_update_success.html"
 
 
+class ReportFindPerson(TemplateView):
+    template_name = "mainapp/missing_and_finding_persons.html"
+
+
 class CollectionCenterFilter(django_filters.FilterSet):
+    lsg_name = django_filters.ChoiceFilter()
+    ward_name = django_filters.ChoiceFilter()
+
     class Meta:
+
         model = CollectionCenter
-        fields = {
-            'name': ['icontains'],
-            'address': ['icontains'],
-            'contacts': ['icontains'],
-            'district': ['icontains'],
-            'lsg_name': ['icontains'],
-            'ward_name': ['icontains'],
-            'city': ['icontains'],
-         }
+        fields = OrderedDict()
+        fields['name'] = ['icontains']
+        fields['address'] = ['icontains']
+        fields['contacts'] = ['icontains']
+        fields['district'] = ['exact']
+        fields['lsg_name'] = ['exact']
+        fields['ward_name'] = ['exact']
+        # fields['city'] = ['icontains']
 
     def __init__(self, *args, **kwargs):
         super(CollectionCenterFilter, self).__init__(*args, **kwargs)
@@ -853,9 +906,12 @@ class CollectionCenterListView(ListView):
     ordering = ['-id']
 
     def get_context_data(self, **kwargs):
+        location = self.kwargs['location']
+        inside_kerala = True if location == 'inside_kerala' else False
         context = super().get_context_data(**kwargs)
+        context['inside_kerala'] = inside_kerala
         context['filter'] = CollectionCenterFilter(
-            self.request.GET, queryset=CollectionCenter.objects.all().order_by('-id')
+            self.request.GET, queryset=CollectionCenter.objects.filter(is_inside_kerala=inside_kerala).order_by('-id')
         )
         return context
 
@@ -873,6 +929,7 @@ class CollectionCenterForm(forms.ModelForm):
             'lsg_name',
             'ward_name',
             'city',
+            'map_link',
         ]
         widgets = {
             'lsg_name': forms.Select(),
@@ -883,3 +940,4 @@ class CollectionCenterForm(forms.ModelForm):
 class CollectionCenterView(CreateView):
     model = CollectionCenter
     form_class = CollectionCenterForm
+    success_url = '/collection_centers/'

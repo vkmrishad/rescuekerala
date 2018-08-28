@@ -17,7 +17,7 @@
 
 <p class="text-center">
   <h1 class="text-center">NGO/Company Registration</h1>
-  <h2 class="text-center">വൊളന്‍റീയര്‍ ആകാന്‍</h2>
+  <h2 class="text-center"></h2>
 </p>
   <form method="post">
   {% csrf_token %}
@@ -29,4 +29,11 @@
   {% endbuttons %}
   </form>
 
+<script type="text/javascript">
+  window.addEventListener('load', function() {
+    $(function() {
+      $('#id_district').selectize();
+    });
+  });
+</script>
 {% endblock %}

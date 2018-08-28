@@ -27,7 +27,7 @@
 <hr>
 
 ### Requirements
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 #### Docker
 <details>
@@ -80,7 +80,7 @@ Run it with sudo - `sudo sh docker.sh`
 <hr>
 
 ### Getting Started
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 ### Setting up a development environment
 
@@ -122,6 +122,7 @@ https://github.com/vigneshhari/keralarescue_test_settings for local testing.
 <summary>4. Install dependencies.</summary>
 
         pip3 install -r requirements.txt
+        pip3 install -r requirements_debug.txt
 </details>
 
 <details>
@@ -132,7 +133,7 @@ https://github.com/vigneshhari/keralarescue_test_settings for local testing.
 
 <details>
 <summary>6. Setup static files.</summary>
-        
+
         python3 manage.py collectstatic
 </details>
 
@@ -150,12 +151,12 @@ That's it!
 <hr>
 
 ### Creating migration files
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 If your code changes anything in models.py, you might need to make changes in database schema, or other constraints. To create migrations files, run python3 manage.py makemigrations --settings=floodrelief.settings after making your changes. Also make sure to add these files in the commit.
 
 ### Running tests
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 When running tests, Django creates a test replica of the database in order for the tests not to change the data on the real database. Because of that, you need to alter the Postgres user that you created and add to it the `CREATEDB` privilege:
 
@@ -172,7 +173,7 @@ python3 manage.py test --settings=floodrelief.test_settings
 <hr>
 
 ### Enable HTTPS connections
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 Certain features (example: GPS location collection) only work with HTTPS connections.  To enable HTTPS connections,follow the below steps.
 
@@ -208,7 +209,7 @@ In the above example the server is being run on a local IP address on port 8002 
 <hr>
 
 ## How can you help?
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 #### Verification of Rescue Requests
 
