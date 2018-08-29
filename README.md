@@ -218,6 +218,8 @@ You can help us with verifying user submitted request from our [Ushahidi volunte
 #### Contribution Guidelines
 Check out this [Wiki](https://github.com/IEEEKeralaSection/rescuekerala/wiki/Contribution-Guidelines) for our contribution guidelines.
 
+Please find issues that we need help [here](https://github.com/IEEEKeralaSection/rescuekerala/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Go through the comments in the issue to check if someone else is already working on it. Don't forget to drop a comment when you start working on it.
+
 
 <details>
 <summary>Testing PRs
@@ -281,3 +283,6 @@ has the bug number in the branch name.
 </details>
 
 <hr>
+
+### Flood Map
+You can find the repo for the Flood Map here : https://github.com/aswinmohanme/kerala-flood-map
