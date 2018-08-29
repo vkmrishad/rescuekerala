@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Relief Camps</li>
+  </ol>
+</nav>
+
+<h3 class="text-center">
+  Relief Camps |
+  ദുരിതാശ്വാസ ക്യാമ്പുകൾ
+</h3>
+
+<div class="row">
+  <div class="col-md-12 text-right">
+    <a class="btn btn-default" href="/coordinator_home" style="margin-top: 5px;">
+      Coordinator Login
+    </a>
+    <a class="btn btn-info" href="https://play.google.com/store/apps/details?id=xyz.appmaker.keralarescue" style="margin-top: 5px;">
+      Coordinator App
+    </a>
+    <p>
+      Contact your coordinator to get login details
+      <br>
+      ലോഗിൻ ഡീറ്റെയിൽസ് ലഭിക്കാൻ കോർഡിനേറ്ററെ സമീപിക്കുക
+    </p>
+  </div>
+</div>
+
+<div class="container text-center">
+    <a href="/relief_camps_list" class="home-button card" role="button">
+        {% bootstrap_icon "home" %}
+        <span class="text text-center">
+            Relief Camps List<br/>
+            ദുരിതാശ്വാസ ക്യാമ്പുകൾ ലിസ്റ്റ്
+            <span class="ml small"></span>
+        </span>
+    </a>
+    <a href="/camp_requirements" class="home-button card" role="button">
+        {% bootstrap_icon "list" %}
+        <span class="text text-center">
+            Supply Requirements<br/>
+            ക്യാമ്പിന്റെ ആവശ്യങ്ങൾ
+            <span class="ml small"></span>
+        </span>
+    </a>
+ 
+    <p class="home-info">
+        Contact Control Room or Disaster Management Cell or District Administration for any support.<br>
+        Volunteers may contact District Project Managers for support related to volunteering and contributions<br>
+        <br/>
+        സഹായത്തിനായി വൊളന്‍റീയര്‍മാര്‍ തയ്യാറാണ്. സഹായം ആവശ്യമെങ്കില്‍ ഒരോ ജില്ലയിലെയും നിയോഗിക്കപെട്ട ഉദ്യോഗസ്ഥരുമായി ബന്ധപ്പെടാം
+    </p>
+</div>
+
+
+{% endblock %}

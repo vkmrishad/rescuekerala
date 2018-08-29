@@ -2,21 +2,29 @@
 {% load bootstrap3 %}
 
 {% block content %}
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Contact Info</li>
+  </ol>
+</nav>
 
+<h1 class="text-center">Contact Info</h1>
+<h2 class="text-center">ഞങ്ങളുമായി ബന്ധപ്പെടാന്‍</h2>
 <p class="text-center">
   Volunteers are available across Kerala. Contact the <u>District level point of contacts</u> for any help. <br/>
   സഹായത്തിനായി വൊളന്‍റീയര്‍മാര്‍ തയ്യാറാണ്. സഹായം ആവശ്യമെങ്കില്‍ ഒരോ ജില്ലയിലെയും നിയോഗിക്കപെട്ട ഉദ്യോഗസ്ഥരുമായി ബന്ധപ്പെടാം
 </p>
-<form action="" method="get">
-       {{ filter.form.as_p }}
-       <input type="submit" value="Find contact"/>
+<form id="find-contact-form" action="" method="get">
+       {% bootstrap_form filter.form bound_css_class=False %}
  </form>
  <div class="table-responsive">
   <table class="table">
     <tr>
-      <th>Name</th>
-      <th>Phone</th>
-      <th>Email</th>
+      <th>Name - പേര്</th>
+      <th>Phone - ഫോൺ</th>
+      <th>Other Contact - മറ്റ് കോൺടാക്റ്റ്</th>
     </tr>
     {% for req in filter.qs %}
         <tr>
@@ -26,4 +34,13 @@
     {% endfor %}
   </table>
 </div>
+<script>
+  window.addEventListener('load', function() {
+    $("#id_district").change(() => {
+      $("#find-contact-form").submit();
+    })
+    $('#id_district').selectize();
+  });
+
+</script>
 {% endblock %}

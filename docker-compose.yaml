@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  
+  db:
+    image: postgres
+    restart: always
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+  web:
+    build: .
+    restart: always
+    environment:
+      ALLOWED_HOSTS: localhost 
+      SECRET_KEY: abcd
+      DEBUG: "True"
+      SENTRY_DSN: ""
+      B_DATABASE_URL: postgres://postgres:@db:5432/postgres
+      REDIS_URL: redis://redis:6379
+      WAIT_FOR: db:5432,redis:6379
+    command: ./run_dev_server.sh
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      

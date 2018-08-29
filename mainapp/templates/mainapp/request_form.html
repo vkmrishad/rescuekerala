@@ -1,76 +1,148 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+{% load static %}
+{% block css %}
+	<style type="text/css">
+		body,html,#place_modal_map{height:100%;margin:0;}
+		#place_modal_map .centerMarker{
+			position:absolute;
+			/*url of the marker*/
+			background:url(http://maps.gstatic.com/mapfiles/markers2/marker.png) no-repeat;
+			/*center the marker*/
+			top:50%;left:50%;
+			z-index:1;
+			/*fix offset when needed*/
+			margin-left:-10px;
+			margin-top:-34px;
+			/*size of the image*/
+			height:34px;
+			width:20px;
+			cursor:pointer;
+		}
+		#place_modal_map{
+				height: 45vh;
+		}
+	</style>
+{% endblock %}
 
 {% block content %}
-  <form method="post"  class="simple-form">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  {% buttons %}
-  <button type="submit" class="btn btn-primary">
-  {% bootstrap_icon "star" %} Submit
-  </button>
-  {% endbuttons %}
-  </form>
+<!--Navigation Breadcrumb-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Request For Help</li>
+  </ol>
+</nav>
 
-  <!-- Instruction Modal -->
-  <div id="instructionModal" class="modal  fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-    <div class="modal-dialog" style="background: white">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Allow Location - നിങ്ങളുടെ സ്ഥലം കൊടുക്കുക </h3>
-      </div>
-      <div class="modal-body">
-        നിങ്ങളുടെ സ്ഥലം നൽകുന്നതെങ്ങനെ<br><br>
+<h1 class="text-center">Request For Help</h1>
+<h2 class="text-center">സഹായം അഭ്യര്‍ഥിക്കാന്‍</h2>
+	<form method="post"  class="simple-form">
+	{% csrf_token %}
+	{% bootstrap_form form %}
 
-        1. നിങ്ങളുടെ ബ്രൗസർ <b>"www.keralaresue.in wants to know your location"</b> എന്ന ഒരു സന്ദേശം കാണിക്കും<br>
-        2. സന്ദേശത്തിൽ <b>Allow</b> തിരഞ്ഞെടുക്കുക
-      </div>
-      <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Ok</button>
-      </div>
-    </div>
-  </div>
+	{% buttons %}
+	<button type="submit" class="btn btn-primary">
+	{% bootstrap_icon "star" %} Submit
+	</button>
+	{% endbuttons %}
+	</form>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script type="text/javascript">
+	<!-- Instruction Modal -->
+	<div id="instructionModal" class="modal  fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+		<div class="modal-dialog" style="background: white">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">Allow Location - നിങ്ങളുടെ സ്ഥലം കൊടുക്കുക </h3>
+			</div>
+			<div class="modal-body">
+				നിങ്ങളുടെ സ്ഥലം നൽകുന്നതെങ്ങനെ<br><br>
+				1. കൂടുതൽ കൃത്യതക്കായി ആദ്യം നിങ്ങളുടെ ഫോണിലെ GPS  ഓൺ ചെയുക.<br>
+				2. നിങ്ങളുടെ ബ്രൗസർ <b>"www.keralarescue.in wants to know your location"</b> എന്ന ഒരു സന്ദേശം കാണിക്കും<br>
+				3. സന്ദേശത്തിൽ <b>Allow</b> തിരഞ്ഞെടുക്കുക
+				<br><br>
+				How to allow location access<br><br>
+				1. For more accuracy, turn on your GPS firstly<br>
+				2. Your browser will show a message <b>"www.keralarescue.in wants to know your location"</b><br>
+				3. Choose the <b>Allow</b> option.
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Ok</button>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- PlacePicker modal -->
+	<div id="place_picker_modal" class="modal  fade" role="dialog" aria-labelledby="place_picker_modal_label" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+		<div class="modal-dialog" style="background: white">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="place_picker_modal_label">Select Location - നിങ്ങളുടെ സ്ഥലം കൊടുക്കുക </h3>
+			</div>
+			<div class="modal-body" id="placePickerBody">
+				<label> Comma seperated GPS coordinates: </label>
+				<div class="input-group">
+				<input type="text" class="form-control" id="manual_coordinates">
+					 <span class="input-group-btn">
+				<button id="load_coordinates_button" class="btn btn-primary">Load</button>
+					 </span>
+				</div>
+				<!-- <input type="text" class="form-control" id="manual_coordinates">
+				<button id="load_coordinates_button" class="btn btn-primary">Save</button> -->
+				<br><br>
+				<div id="place_modal_map"></div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Done</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript">
 	try {
-
+		var modalMap;
 		window.addEventListener('load', checkVisibility, false);
 		var checkboxes = document.querySelectorAll("input[type=checkbox]");
 		for(var i=0; i< checkboxes.length; i++) {
 			checkboxes[i].addEventListener("change",checkVisibility);
 		}
- 	 	
- 	 	function checkVisibility(){
+
+		function checkVisibility(){
 			var formgroups = document.querySelectorAll(".form-group");
 			Array.prototype.forEach.call(formgroups, function(el, i){
 				var checkbox = el.querySelectorAll(".checkbox");
 				if(checkbox.length > 0){
 					var checkboxElem = el.querySelectorAll("input")[0];
 					if(checkboxElem.id === "id_is_request_for_others" ){
-					    $('#id_latlng').parent().show();
-					    $('#id_latlng_accuracy').parent().show();
-					    $('#id_latlng_display').show();
 					}
 					else if(checkboxElem.checked){
-						formgroups[i+1].style.display = "block";						
+						formgroups[i+1].style.display = "block";
 					}
 					else{
-						formgroups[i+1].style.display = "none";												
+						formgroups[i+1].style.display = "none";
 					}
 				}
-			});  		
+			});
 
 		}
-  }
+	}
 	catch(err) {
 		console.log("Your browser does not allow some javascript programs.\nError Message : " + err.message)
 	}
 
 	window.onload = function(){
-        $("#id_requestee_phone").attr('type', 'number');
+		initializeModalMap(10.5276, 76.2144, 7);
+		$("#id_requestee_phone").attr('type', 'number');
 		var gpsField = document.getElementById('id_latlng');
 		var gpsAccuracyField = document.getElementById('id_latlng_accuracy');
+		// GPS Field is not editable via text.
+		gpsField.readOnly = true;
+		gpsAccuracyField.readOnly = true;
+		// Collect accuracy, but don't display it to user.
+		$(gpsAccuracyField).parent().hide();
+		$(gpsField).click(showLocationPopup);
+
 		var options = {
 			enableHighAccuracy: true
 		};
@@ -79,27 +151,126 @@
 			var crd = pos.coords;
 				gpsField.value = crd.latitude + "," + crd.longitude;
 				gpsAccuracyField.value = crd.accuracy + ' Meters';
-				$.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1')
-					.done(function(response) {
-						var inputElem = $('<input class="form-control" id="id_latlng_display" value="' + response.display_name + '"</input>')
-						$(gpsField).before(inputElem);
-						$(gpsField).hide();
-						console.log(response.display_name);
-					})
-					.fail(function(err){
-						console.log(err);
-					});
+				refreshMap(crd.latitude, crd.longitude, 14);
+				displayAddress(crd.latitude, crd.longitude);
 		}
 
 		var error = function(err) {
 			console.warn(`ERROR(${err.code}): ${err.message}`);
+			showLocationPopup();
 		}
-    $('#modal_ok_button').click(function(event) {
-      navigator.geolocation.getCurrentPosition(success, error, options);
-    });
+
+		$('#instructionModal').on('hidden.bs.modal', function (e) {
+			navigator.geolocation.getCurrentPosition(success, error, options);
+		});
+
 		$('#instructionModal').modal('show');
+
+		$('#load_coordinates_button').click(loadManualGps);
+		$('#manual_coordinates').keypress(function (e) {
+			if (e.which === 13) {
+				loadManualGps();
+			}
+		});
+
+		// hiding dev message on form!
+		$('#id_is_request_for_others').parent().parent().next().hide();
+		$('#place_picker_modal').on('hidden.bs.modal', function (e) {
+			var latLng = $('#id_latlng').val().split(',');
+			$('#id_latlng_accuracy').val('5 Meters');
+			displayAddress(latLng[0].trim(), latLng[1].trim());
+		});
 	}
 
-  </script>
+	$('#location-manually').on('click', function(event){
+		event.preventDefault();
+	});
+
+	$('#id_is_request_for_others').on('change', function(){
+		if($(this).is(":checked")){
+			$('#pac-input').attr('required', 'required');
+			showLocationPopup();
+		}
+		else{
+			$('#pac-input').removeAttr('required');
+		}
+	});
+
+	var showLocationPopup = function(coords) {
+		$('#place_picker_modal').modal('show');
+	}
+
+	function initializeModalMap(lat, lng, zoom) {
+		var mapOptions = {
+			zoom: zoom || 14,
+			center: new google.maps.LatLng(lat, lng),
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			fullscreenControl: false,
+			gestureHandling: 'greedy'
+		};
+		modalMap = new google.maps.Map(document.getElementById('place_modal_map'),
+			mapOptions);
+		google.maps.event.addListener(modalMap,'center_changed', function() {
+			$('#id_latlng').val(modalMap.getCenter().lat() + ',' +  modalMap.getCenter().lng());
+			$('#manual_coordinates').val(modalMap.getCenter().lat() + ',' +  modalMap.getCenter().lng());
+		});
+		$('<div/>').addClass('centerMarker').appendTo(modalMap.getDiv())
+			//do something onclick
+			.click(function() {
+				var that = $(this);
+				if (!that.data('win')) {
+					that.data('win', new google.maps.InfoWindow({
+						content: 'this is the center'
+					}));
+					that.data('win').bindTo('position', modalMap, 'center');
+				}
+				that.data('win').open(modalMap);
+			});
+	}
+	function refreshMap(lat, lng, zoom){
+		var mapOptions = {
+			zoom: zoom,
+			center: new google.maps.LatLng(lat, lng)
+		};
+		modalMap.setOptions(mapOptions);
+	}
+
+	function displayAddress(lat, lng) {
+		console.log(lat, lng);
+		$.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lng + '&zoom=18&addressdetails=1')
+					.done(function(response) {
+						if($('#id_latlng_display').length === 0){
+							var inputElem = $('<input class="form-control" id="id_latlng_display" readonly="true">');
+							$('#id_latlng').before(inputElem);
+							$('#id_latlng').hide();
+							inputElem.click(showLocationPopup);
+						}
+						$('#id_latlng_display').val(response.display_name);
+					})
+					.fail(function(err){
+						console.log(err);
+					});
+	}
+
+	function loadManualGps() {
+		var str = $('#manual_coordinates').val();
+		console.log(str);
+		var latLng = $('#manual_coordinates').val().split(',');
+		console.log(latLng, latLng[0], latLng[1]);
+		if(latLng.length === 2 && !isNaN(latLng[0]) && !isNaN(latLng[1])){
+			refreshMap(latLng[0].trim(), latLng[1].trim(), 14);
+			displayAddress(latLng[0].trim(), latLng[1].trim());
+			$('#id_latlng').val(latLng);
+			$('#id_latlng_accuracy').val('5 Meters');
+		}
+		else{
+			alert("Invalid GPS location, enter only comma seperated decimal coordinates!\n\nEg: 10.5276,76.2144");
+		}
+	}
+
+
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdPKYd4vwgQY-OmF0Vn22wJu0EcDyi1MQ&libraries=places"
+				async defer></script>
 
 {% endblock %}

@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="../../privatecc/">Private Relief & Collection Centres</a></li>
+    <li class="breadcrumb-item"><a href="/collection_centers/">View Collection Centers</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="inside_kerala"></span></li>
+  </ol>
+</nav>
+
+<div class="text-center">
+  <h3><a href="/collection_centers/">Collection Centers</a>&nbsp;>&nbsp;<span class="inside_kerala"></span></h3>
+</div>
+
+<div>
+    <form action="" method="get">
+        {% bootstrap_form filter.form bound_css_class=False %}
+        <input value="Search" class="btn btn-primary" type="submit" />
+    </form>
+
+    <table class="table" id="collection-center-table">
+        <tr>
+            <th>Center ID</th>
+            <th>Center Name <span><input class="search" id="search-name" type="text" name="search-name" /></span></th>
+            <th>Address <span><input class="search" id="search-address" type="text" name="search-address" /></span></th>
+            <th>Contacts <span><input class="search" id="search-contact" type="text" name="search-contact" /></span></th>
+            <th>Materials Collecting <span><input class="search" id="search-materials" type="text" name="search-materials" /></span></th>
+        </tr>
+    {% for center in filter.qs %}
+        <tr valign="top">
+              <td>{{ center.id }}</td>
+              <td>{{ center.name }}</td>
+              <td>{{ center.address }}</td>
+              <td>{{ center.contacts }}</td>
+              <td>{{ center.type_of_materials_collecting }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No Collection Centers added yet.</td></tr>
+    {% endfor %}
+    </table>
+
+    {% if is_paginated %}
+
+        <div class="pagination" >
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="{% url 'collection_centers_list' %}?page=1">&laquo; first</a>
+                    <a href="{% url 'collection_centers_list' %}?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <a class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+                    {% elif i > page_obj.min_page and i < page_obj.max_page or i|divisibleby:data.lim_page %}
+                        <a href="{% url 'collection_centers_list' %}?page={{ i }}">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="{% url 'collection_centers_list' %}?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="{% url 'collection_centers_list' %}?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+            var inside_kerala = {{ inside_kerala|yesno:"true,false" }};
+            if(inside_kerala){
+                $(".inside_kerala").text("Inside Kerala");
+            }
+            else{
+                $(".inside_kerala").text("Outside Kerala");
+                $("#id_district").parent().remove();
+                $("#id_ward_name").parent().remove();
+                $("#id_lsg_name").parent().remove();
+            }
+    </script>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            $("input.search").keyup(search);
+        }
+
+        function search() {
+            $("#collection-center-table").find("tr").each(function(i,el) {
+                // skip header row
+                if (i == 0) return;
+                el = $(el);
+                var tds = el.find("td");
+
+                var name = tds.eq(1).text().toLowerCase();
+                var nameKey = $("#search-name").val().toLowerCase();
+
+                var address = tds.eq(2).text().toLowerCase();
+                var addressKey = $("#search-address").val().toLowerCase();
+
+                var contact = tds.eq(3).text().toLowerCase();
+                var contactKey = $("#search-contact").val().toLowerCase();
+
+                var materials = tds.eq(4).text().toLowerCase();
+                var materialsKey = $("#search-materials").val().toLowerCase();
+
+
+                if ( name.includes(nameKey)
+                     && address.includes(addressKey)
+                     && contact.includes(contactKey)
+                     && materials.includes(materialsKey)
+                   )
+                {
+                   el.show();
+                } else {
+                   el.hide();
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+    $( document ).ready(function() {
+
+        // function to hide and show relevant fields based on the is_inside_kerala checkbox selection
+
+
+        var kerala_district_mapping = {
+            "ksr": "KASARAGOD",
+            "knr": "KANNUR",
+            "wnd": "WAYANAD",
+            "koz": "KOZHIKODE",
+            "mpm": "MALAPPURAM",
+            "pkd": "PALAKKAD",
+            "tcr": "THRISSUR",
+            "ekm": "ERNAKULAM",
+            "idk": "IDUKKI",
+            "ktm": "KOTTAYAM",
+            "alp": "ALAPPUZHA",
+            "ptm": "PATHANAMTHITTA",
+            "kol": "KOLLAM",
+            "tvm": "THIRUVANANTHAPURAM",
+        };
+
+        var get_district_local_bodies = function(selected_district) {
+            var district_name = kerala_district_mapping[selected_district];
+            return kerala_local_bodies[district_name];
+        };
+
+        var kerala_local_bodies = {};
+        $.ajax({
+            url: '/api/1/kerala_local_bodies/',
+            data: {},
+            dataType: 'json',
+            success: function (data) {
+                kerala_local_bodies = data;
+            }
+        });
+
+        var populate_ward_names = function() {
+            var selected_district = $("#id_district").find(":selected").val();
+            var selected_lsg = $("#id_lsg_name").find(":selected").val();
+            if (selected_lsg) {
+                var district_local_bodies = get_district_local_bodies(selected_district);
+
+                $("#id_ward_name option").each(function() {
+                    $(this).remove();
+                });
+
+                $.each(district_local_bodies[selected_lsg]['wards'], function(key, value) {
+                    $('#id_ward_name')
+                         .append($("<option></option>")
+                                    .attr("value", key)
+                                    .text(value));
+                });
+            }
+
+        };
+
+        var populate_lsg_names = function() {
+            var selected_district = $("#id_district").find(":selected").val();
+            if (selected_district) {
+                var district_local_bodies = get_district_local_bodies(selected_district);
+                $("#id_lsg_name option").each(function() {
+                    $(this).remove();
+                });
+                $.each(district_local_bodies, function(key, value) {
+                    $('#id_lsg_name')
+                         .append($("<option></option>")
+                                    .attr("value", key)
+                                    .text(value['name']));
+                });
+
+                populate_ward_names();
+            };
+
+        };
+
+        $("#id_district").change(function() {
+            console.log('changed');
+            populate_lsg_names();
+        });
+
+        $("#id_lsg_name").change(function() {
+            populate_ward_names();
+        });
+
+    });
+    </script>
+{% endblock %}

@@ -2,17 +2,17 @@
 {% load bootstrap3 %}
 
 {% block content %}
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Contributor Form</li>
+  </ol>
+</nav>
 
-
+<h1 class="text-center">To Contribute Materials/Services</h1>
+<h2 class="text-center">സംഭാവന നല്‍കാന്‍ ഉദ്ദേശിക്കുന്ന സാധനങ്ങള്‍/സേവനം</h2>
   <form method="post">
-    <b class="text-center"> You can also contribute to Chief Minister's Fund:<br>
-      മുഖ്യമന്തിയുടെ ദുരിതാശ്വാസ നിധിയിലേക്ക് സംഭാവന ചെയ്യാം<br/>
-      Account number : 67319948232<br>
-      Bank: SBI<br>
-      Branch: City Branch, TVM<br>
-      IFS Code: SBIN0070028<br>
-      <a href="https://donation.cmdrf.kerala.gov.in/">Donate to Chief Minister's Fund Online</a>
-    </b><br><br>
   {% csrf_token %}
   {% bootstrap_form form %}
   {% buttons %}
@@ -22,8 +22,8 @@
   {% endbuttons %}
   </form>
 <script>
-    window.onload = function() {
+    window.addEventListener('load', function() {
         $("#id_phone").attr('type', 'number');
-    }
+    });
 </script>
 {% endblock %}
