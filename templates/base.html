@@ -27,12 +27,13 @@
   {% bootstrap_css %}
 
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
-
+  <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css">
 
 
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
 
  {% block body %}
@@ -83,8 +84,8 @@
     <br /><br />
     <span>
         നിങ്ങളുടെ എല്ലാ ആരോഗ്യസംബന്ധ സംശയങ്ങൾക്കും വിളിക്കാം ടോൾ ഫ്രീ നമ്പർ <strong><a href="tel:18001231454">1800 123 1454</a></strong><br />
-        Call toll free number <strong><a href="tel:18001231454">1800 123 1454</a></strong> for all your health related doubts.<br />
-        24x7 Helpline Call Centre, Disaster control unit, Directorate of Health Services, Government of Kerala.<br />
+        Call toll free number <strong><a href="tel:18001231454">1800 123 1454</a></strong> for all your health related questions.<br />
+        24x7 Helpline Call Centre, Disaster Control Unit, Directorate of Health Services, Government of Kerala.<br />
     </span>
     {# &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; #}
     {# <a href="/ieee/"><img src="{% static 'images/ieeelogo.png' %}" class="footer-logo"></a> #}
@@ -93,7 +94,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 {% bootstrap_javascript %}
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
 {% block javascript %}
 {% endblock %}
 

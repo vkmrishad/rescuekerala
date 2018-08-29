@@ -17,18 +17,24 @@
                     <td><b> Camp Name : </b></td><td>{{ req.name }}</td>
                   </tr>
                   <tr>
-      <tr>
         <td><b> District : </b></td><td>{{ req.get_district_display }}</td>
       </tr>
       <tr>
-            <tr>
-                    <td><b> Taluk : </b></td><td>{{ req.taluk }}</td>
-                  </tr>
-                  <tr>
-                        <tr>
-                                <td><b> Village : </b></td><td>{{ req.village }}</td>
-                              </tr>
-                              <tr>
+      <td><b> LSG Type : </b></td><td>{{ req.get_lsg_type_display }}</td>
+      </tr>
+      <tr>
+      <td><b> LSG Name : </b></td><td>{{ req.lsg_name }}</td>
+      </tr>
+
+      <tr>
+          <td><b> Ward  : </b></td><td>{{ req.ward_name }}</td>
+          </tr>
+          <tr>
+          <td><b> City  : </b></td><td>{{ req.city }}</td>
+          </tr>
+          
+
+      <tr>
         <td><b> Location : </b></td><td>{{ req.location }}</td>
       </tr>
       <tr>

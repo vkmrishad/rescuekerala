@@ -2,9 +2,16 @@
 {% load bootstrap3 %}
 
 {% block content %}
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Contributor Form</li>
+  </ol>
+</nav>
 
-<h1 class="text-center">To Contribute Materials</h1>
-<h2 class="text-center">സംഭാവന നല്‍കാന്‍</h2>
+<h1 class="text-center">To Contribute Materials/Services</h1>
+<h2 class="text-center">സംഭാവന നല്‍കാന്‍ ഉദ്ദേശിക്കുന്ന സാധനങ്ങള്‍/സേവനം</h2>
   <form method="post">
   {% csrf_token %}
   {% bootstrap_form form %}
@@ -15,8 +22,8 @@
   {% endbuttons %}
   </form>
 <script>
-    window.onload = function() {
+    window.addEventListener('load', function() {
         $("#id_phone").attr('type', 'number');
-    }
+    });
 </script>
 {% endblock %}

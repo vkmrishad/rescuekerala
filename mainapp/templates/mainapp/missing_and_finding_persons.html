@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Missing Person or Find Person</li>
+  </ol>
+</nav>
+
+<h3 class="text-center">
+  Report Missing Persons And Finding Persons. <br /> വ്യക്തിയെ തിരയുക | കാണാതായ വ്യക്തികളെ റിപ്പോർട്ട് ചെയ്യുക.
+</h3>
+<h6 class="text-center">
+Kindly use search person facility before reporting a missing case.
+</h6>
+
+<div class="container text-center">
+    <a href="/find_people" class="home-button card" role="button">
+        {% bootstrap_icon "user" %}
+        <span class="text text-center">
+            Person Finder<br/>
+            വ്യക്തിയെ തിരയുക
+            <span class="ml small"></span>
+        </span>
+    </a>
+    <a href="/missing_persons" class="home-button card" role="button">
+        {% bootstrap_icon "user" %}
+        <span class="text text-center">
+            Missing Persons<br/>
+            കാണാതായ വ്യക്തികളെ റിപ്പോർട്ട് ചെയ്യുക
+            <span class="ml small"></span>
+        </span>
+    </a>    
+
+
+    <p class="home-info">
+        Contact Control Room or Disaster Management Cell or District Administration for any support.<br>
+        Volunteers may contact District Project Managers for support related to volunteering and contributions<br>
+        <br/>
+        സഹായത്തിനായി വൊളന്‍റീയര്‍മാര്‍ തയ്യാറാണ്. സഹായം ആവശ്യമെങ്കില്‍ ഒരോ ജില്ലയിലെയും നിയോഗിക്കപെട്ട ഉദ്യോഗസ്ഥരുമായി ബന്ധപ്പെടാം
+    </p>
+</div>
+
+
+{% endblock %}

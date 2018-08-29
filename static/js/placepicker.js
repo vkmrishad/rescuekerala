@@ -8,7 +8,7 @@
         var types = document.getElementById('type-selector');
         var strictBounds = document.getElementById('strict-bounds-selector');
 
-        
+
         var autocomplete = new google.maps.places.Autocomplete(input);
 
 
@@ -36,7 +36,7 @@
               (place.address_components[1] && place.address_components[1].short_name || ''),
               (place.address_components[2] && place.address_components[2].short_name || '')
             ].join(' ');
-          } 
+          }
           var location = place.geometry.location;
           var lat_lng = String(location.lat()) + "," + String(location.lng())
 
@@ -65,5 +65,3 @@
               autocomplete.setOptions({strictBounds: this.checked});
             });
       }
-
-    

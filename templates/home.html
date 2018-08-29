@@ -4,20 +4,33 @@
 
 {% load bootstrap3 %}
 
+<nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Home</li>
+        </ol>
+    </nav>
 <div class="container text-center">
     <h1 class="main-logo">kerala<span style="font-weight: normal;">rescue</span></h1>
     <p style="margin-bottom:20px;">
         <i>An initiative by Govt. of Kerala, Kerala State IT Mission and IEEE Kerala Section<br>
         For effective collaboration and communications between authorities, volunteers and public </i><br/>
-        <strong><span class="notranslate">ദുരിതാശ്വാസ പ്രവര്‍ത്തനങ്ങളും രക്ഷാ ദൗത്യങ്ങളും ഏകോപിപ്പിക്കാന്‍</span></strong><br/>
+        <strong><span class="notranslate">ദുരിതാശ്വാസ പ്രവർത്തനങ്ങളും രക്ഷാ ദൗത്യങ്ങളും ഏകോപിപ്പിക്കാൻ</span></strong><br/>
           <a class="btn btn-info btn-msg" href="{% static 'images/msg_cm.jpg' %}">Message from Hon. Chief Minister of Kerala</a>
           <a class="btn btn-info btn-msg" href="https://donation.cmdrf.kerala.gov.in/">Donate to Chief Minister's Fund Online</a>
+          <a class="btn btn-info btn-msg" href="https://afterflood.in">After Flood Resources</a>
   </p>
     <a href="/request/" class="home-button card" role="button">
         {% bootstrap_icon "grain" %}
         <span class="text">
             Request<br/>for help<br/>
-            <span class="ml small notranslate">സഹായം അഭ്യര്‍ഥിക്കാന്‍</span>
+            <span class="ml small notranslate">സഹായം അഭ്യർത്ഥിക്കാൻ</span>
+        </span>
+    </a>
+    <a href="/missing_and_finding_persons/" class="home-button card" role="button">
+        {% bootstrap_icon "user" %}
+        <span class="text">
+            Missing Person/<br />Find Person<br/>
+                <span class="ml small notranslate">വ്യക്തിയെ തിരയുക/<br/>കാണാതായ വ്യക്തികളെ <br/>റിപ്പോർട്ട് ചെയ്യുക</span>
         </span>
     </a>
     <a href="/relief_camps/" class="home-button card" role="button">
@@ -31,7 +44,7 @@
         {% bootstrap_icon "apple" %}
         <span class="text">
             To Contribute<br/>
-            <span class="ml small notranslate">സംഭാവന നല്‍കാന്‍</span>
+            <span class="ml small notranslate">സംഭാവന നൽകാൻ</span>
         </span>
     </a>
     <a href="/district_needs/" class="home-button card" role="button">
@@ -44,8 +57,8 @@
     <a href="/ngo-volunteer/" class="home-button card" role="button">
         {% bootstrap_icon "user" %}
         <span class="text">
-            Volunteer/NGO <br/>
-            <span class="ml small notranslate">വൊളന്‍റീയര്‍ </span>
+            Volunteer &amp; NGO/COMPANY <br/>
+            <span class="ml small notranslate">വൊളന്‍റീയര &amp;<br/> എൻജിഒ്/കമ്പനി‍ </span>
         </span>
     </a>
     <a href="/map-view" class="home-button card" role="button">
@@ -76,12 +89,11 @@
             <span class="ml small notranslate">അറിയിപ്പുകൾ</span>
         </span>
     </a>
-    <a href="https://www.facebook.com/IndiaHSI/" class="home-button card" role="button">
-        {% bootstrap_icon "knight" %}
+    <a href="/privatecc" class="home-button card" role="button">
+        {% bootstrap_icon "briefcase" %}
         <span class="text">
-        Animal Rescue<br/>
-            <span class="ml small notranslate">മൃഗ രക്ഷ സഹായം അഭ്യര്‍ഥിക്കാന്‍ </span><br/>
-			<span class="ml small notranslate">Helpline: +91 89433 22808 </span>
+                Private Relief &<br> Collection Centers<br/>
+            <span class="ml small notranslate">സ്വകാര്യ റിലീഫ് ആൻഡ് കളക്ഷൻ സെന്ററുകൾ</span>
         </span>
     </a>
     <p class="home-info">
@@ -91,7 +103,7 @@
         <span class="notranslate">സഹായത്തിനായി വൊളന്‍റീയര്‍മാര്‍ തയ്യാറാണ്. സഹായം ആവശ്യമെങ്കില്‍ ഒരോ ജില്ലയിലെയും നിയോഗിക്കപെട്ട ഉദ്യോഗസ്ഥരുമായി ബന്ധപ്പെടാം</span>
     </p>
   <p class="slack">
-       Our Collaboration Platform (Slack) <a href="bit.ly/keralarescueslack">Join</a>
-  </p>   
+       Our Collaboration Platform (Slack) <a href="https://bit.ly/Keralarescuechat">Join</a>
+  </p>
 </div>
 {% endblock %}

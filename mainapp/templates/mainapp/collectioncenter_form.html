@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block content %}
+
+<!--Navigation Breadcrumbs-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="../privatecc/">Private Relief & Collection Centres</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Add Collection Center</li>
+  </ol>
+</nav>
+
+<div class="text-center">
+  <h3>Collection Centers</h3>
+</div>
+
+<div>
+    <form method="post"  class="simple-form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+
+        {% buttons %}
+        <button type="submit" class="btn btn-primary">
+        {% bootstrap_icon "star" %} Submit
+        </button>
+        {% endbuttons %}
+    </form>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+
+    <script type="text/javascript" src="{% static 'js/form-lsg-ward-picker.js' %}"></script>
+{% endblock %}

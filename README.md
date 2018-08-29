@@ -4,7 +4,7 @@
 
 <p align="center">The Website for co-ordinating the rehabilitation of the people affected in the 2018 Kerala Floods.</p>
 
-[![Join Kerala Rescue Slack channel](https://i.imgur.com/V7jxjak.png)](http://bit.ly/keralarescueslack)
+[![Join Kerala Rescue Slack channel](https://i.imgur.com/V7jxjak.png)](http://bit.ly/Keralarescuechat)
 
 ## Table of Contents
 - [Requirements](#requirements)
@@ -27,7 +27,7 @@
 <hr>
 
 ### Requirements
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 #### Docker
 <details>
@@ -80,7 +80,7 @@ Run it with sudo - `sudo sh docker.sh`
 <hr>
 
 ### Getting Started
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 ### Setting up a development environment
 
@@ -122,6 +122,7 @@ https://github.com/vigneshhari/keralarescue_test_settings for local testing.
 <summary>4. Install dependencies.</summary>
 
         pip3 install -r requirements.txt
+        pip3 install -r requirements_debug.txt
 </details>
 
 <details>
@@ -132,7 +133,7 @@ https://github.com/vigneshhari/keralarescue_test_settings for local testing.
 
 <details>
 <summary>6. Setup static files.</summary>
-        
+
         python3 manage.py collectstatic
 </details>
 
@@ -150,12 +151,12 @@ That's it!
 <hr>
 
 ### Creating migration files
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 If your code changes anything in models.py, you might need to make changes in database schema, or other constraints. To create migrations files, run python3 manage.py makemigrations --settings=floodrelief.settings after making your changes. Also make sure to add these files in the commit.
 
 ### Running tests
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 When running tests, Django creates a test replica of the database in order for the tests not to change the data on the real database. Because of that, you need to alter the Postgres user that you created and add to it the `CREATEDB` privilege:
 
@@ -172,7 +173,7 @@ python3 manage.py test --settings=floodrelief.test_settings
 <hr>
 
 ### Enable HTTPS connections
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 Certain features (example: GPS location collection) only work with HTTPS connections.  To enable HTTPS connections,follow the below steps.
 
@@ -208,7 +209,7 @@ In the above example the server is being run on a local IP address on port 8002 
 <hr>
 
 ## How can you help?
-[^toc](#table-of-contents)
+[^top](#table-of-contents)
 
 #### Verification of Rescue Requests
 
@@ -216,6 +217,8 @@ You can help us with verifying user submitted request from our [Ushahidi volunte
 
 #### Contribution Guidelines
 Check out this [Wiki](https://github.com/IEEEKeralaSection/rescuekerala/wiki/Contribution-Guidelines) for our contribution guidelines.
+
+Please find issues that we need help [here](https://github.com/IEEEKeralaSection/rescuekerala/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Go through the comments in the issue to check if someone else is already working on it. Don't forget to drop a comment when you start working on it.
 
 
 <details>
@@ -280,3 +283,6 @@ has the bug number in the branch name.
 </details>
 
 <hr>
+
+### Flood Map
+You can find the repo for the Flood Map here : https://github.com/aswinmohanme/kerala-flood-map
