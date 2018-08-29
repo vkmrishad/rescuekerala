@@ -67,8 +67,8 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-center">Registered Request</h1>
-<h2 class="text-center">ഇതു വരെ ആവശ്യപ്പെട്ടവ</h2>
+<h1 class="text-center">List of NGOs</h1>
+{# <h2 class="text-center">ഇതു വരെ ആവശ്യപ്പെട്ടവ</h2> #}
 <form action="" method="get">
        {% bootstrap_form filter.form bound_css_class=False %}
        <input value="View requests" class="btn btn-primary" type="submit" />
@@ -77,25 +77,31 @@
   <table id="req-table" class="table">
     <thead>
       <tr>
-        <th>Request Number - അപേക്ഷ നമ്പര്‍</th>
-        <th>District - ജില്ല</th>
-        <th>Location - സ്ഥലം</th>
-        <th>Requestee - അപേക്ഷകന്‍റെ പേര</th>
-        <th>Phone - ഫോണ്‍ നമ്പര്‍</th>
-        <th>Date - തീയതി</th>
-        <th>More details - കൂടുതൽ വിശദാംശങ്ങൾ</th>
+        <th>District</th>
+        <th>Organisation</th>
+        <th>Organisation Type</th>
+        <th>Organisation Address</th>
+        <th>Name</th>
+        <th>Phone‍</th>
+        <th>Description</th>
+        <th>Area</th>
+        <th>Location</th>
+        <th>Joined</th>
       </tr>
     </thead>
     <tbody>
     {% for req in data %}
         <tr>
-          <td>{{ req.id }}</td>
           <td>{{ req.get_district_display }}</td>
+          <td>{{ req.organisation }}</td>
+          <td>{{ req.organisation_type }}</td>
+          <td>{{ req.organisation_address }}</td>
+          <td>{{ req.name }}</td>
+          <td>{{ req.phone }}</td>
+          <td>{{ req.description }}</td>
+          <td>{{ req.area }}</td>
           <td>{{ req.location }}</td>
-          <td>{{ req.requestee }}</td>
-          <td><a href="tel:{{ req.requestee_phone }}" >{{ req.requestee_phone }}</a></td>
-          <td>{{ req.dateadded }}</td>
-          <td><a class="btn btn-sm btn-success" href="{%url 'requestdetailsview' req.id %}" target="_blank">More details</a>
+          <td>{{ req.joined }}</td>
         </tr>
     {% endfor %}
   </tbody>
@@ -124,7 +130,7 @@
   </div>
 
  </div>
-
+<!--
  <script>
    window.onload = function() {
      $("input.search").keyup(search);
@@ -154,4 +160,5 @@
    })
    }
  </script>
+-->
  {% endblock %}

@@ -15,25 +15,25 @@
         <thead>
           <tr>
             <th>District - ജില്ല</th>
-            <th>Total request for help received</th>
-            <th>Requests Completed</th>
-            <th>Requests Ongoing</th>
-            <th>Total Contributions</th>
-            <th>Contributions Served</th>
-            <th>Total Volunteers</th>
+            <th>Total Camps</th>
+            <th>Total People</th>
+            <th>To‍tal Male</th>
+            <th>To‍tal Female</th>
+            <th>To‍tal Infants</th>
+            <th>Med Needed</th>
             
           </tr>
         </thead>
         <tbody>
-        {% for d in data %}
+        {% for camp in camps %}
             <tr>
-              <td>{{ d.district }}</td>
-              <td>{{ d.req }}</td>
-              <td>{{ d.reqd }}</td>
-              <td>{{ d.reqo }}</td>
-              <td>{{ d.con }}</td>
-              <td>{{ d.cons }}</td>
-              <td>{{ d.vol }}</td>
+              <td>{{ camp.district }}</td>
+              <td>{{ camp.total_camp }}</td>
+              <td>{{ camp.total_people }}</td>
+              <td>{{ camp.total_male }}</td>
+              <td>{{ camp.total_female }}</td>
+              <td>{{ camp.total_infant }}</td>
+              <td>{{ camp.total_medical }}</td>
               
             </tr>
         {% endfor %}

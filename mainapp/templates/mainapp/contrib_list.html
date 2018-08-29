@@ -67,35 +67,33 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-center">Registered Request</h1>
-<h2 class="text-center">ഇതു വരെ ആവശ്യപ്പെട്ടവ</h2>
+<h1 class="text-center">Registered Contributors</h1>
+<h2 class="text-center">malayalam placeholder</h2>
 <form action="" method="get">
        {% bootstrap_form filter.form bound_css_class=False %}
-       <input value="View requests" class="btn btn-primary" type="submit" />
+       <input value="View Contributors" class="btn btn-primary" type="submit" />
  </form>
  <div id="requests-table" class="table-responsive">
   <table id="req-table" class="table">
     <thead>
       <tr>
-        <th>Request Number - അപേക്ഷ നമ്പര്‍</th>
         <th>District - ജില്ല</th>
-        <th>Location - സ്ഥലം</th>
-        <th>Requestee - അപേക്ഷകന്‍റെ പേര</th>
+        <th>Name - ml</th>
         <th>Phone - ഫോണ്‍ നമ്പര്‍</th>
-        <th>Date - തീയതി</th>
-        <th>More details - കൂടുതൽ വിശദാംശങ്ങൾ</th>
+        <th>address -ml-</th>
+        <th>commodities -ml-</th>
+        <th>Status -ml-</th>
       </tr>
     </thead>
     <tbody>
     {% for req in data %}
         <tr>
-          <td>{{ req.id }}</td>
           <td>{{ req.get_district_display }}</td>
-          <td>{{ req.location }}</td>
-          <td>{{ req.requestee }}</td>
-          <td><a href="tel:{{ req.requestee_phone }}" >{{ req.requestee_phone }}</a></td>
-          <td>{{ req.dateadded }}</td>
-          <td><a class="btn btn-sm btn-success" href="{%url 'requestdetailsview' req.id %}" target="_blank">More details</a>
+          <td>{{ req.name }}</td>
+          <td>{{ req.phone }}</td>
+          <td>{{ req.address }}</td>
+          <td>{{ req.commodities }}</td>
+          <td>{{ req.get_status_display }}</td>
         </tr>
     {% endfor %}
   </tbody>
@@ -124,7 +122,7 @@
   </div>
 
  </div>
-
+<!--
  <script>
    window.onload = function() {
      $("input.search").keyup(search);
@@ -153,5 +151,5 @@
          }
    })
    }
- </script>
+ </script>-->
  {% endblock %}

@@ -24,7 +24,15 @@ districts = (
 status_types =(
     ('new', 'New'),
     ('pro', 'In progess'),
-    ('sup', 'Supplied'),
+    ('sup', 'Supplied')
+)
+
+volunteer_update_status_types = (
+    ('hig', 'High priority'),
+    ('med', 'Medium priority'),
+    ('low', 'Low priority'),
+    ('cls', 'Can be closed'),
+    ('otr', 'Other')
 )
 
 contrib_status_types =(
@@ -144,6 +152,7 @@ class Request(models.Model):
     def __str__(self):
         return self.get_district_display() + ' ' + self.location
 
+
 class Volunteer(models.Model):
     district = models.CharField(
         max_length = 15,
@@ -165,6 +174,7 @@ class Volunteer(models.Model):
     is_spoc = models.BooleanField(default=False, verbose_name="Is point of contact")
     joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    has_consented = models.BooleanField(default=False, verbose_name="Available")
 
     class Meta:
         verbose_name = 'Volunteer: Individual'
@@ -248,6 +258,7 @@ class DistrictManager(models.Model):
     def __str__(self):
         return self.name + ' ' + self.get_district_display()
 
+
 class DistrictNeed(models.Model):
     district = models.CharField(
         max_length = 15,
@@ -276,6 +287,7 @@ class DistrictCollection(models.Model):
     class Meta:
         verbose_name = 'District: Collection'
         verbose_name_plural = 'District: Collections'
+
 
 class RescueCamp(models.Model):
     name = models.CharField(max_length=50,verbose_name="Camp Name - ക്യാമ്പിന്റെ പേര്")
@@ -316,6 +328,51 @@ class RescueCamp(models.Model):
     class Meta:
         verbose_name = 'Relief: Camp'
         verbose_name_plural = "Relief: Camps"
+
+
+    def __str__(self):
+        return self.name
+
+
+class PrivateRescueCamp(models.Model):
+    name = models.CharField(max_length=50,verbose_name="Camp Name - ക്യാമ്പിന്റെ പേര്")
+    location = models.TextField(verbose_name="Address - അഡ്രസ്",blank=True,null=True)
+    district = models.CharField(
+        max_length=15,
+        choices=districts
+    )
+    taluk = models.CharField(max_length=50,verbose_name="Taluk - താലൂക്ക്")
+    village = models.CharField(max_length=50,verbose_name="Village - വില്ലജ്")
+    contacts = models.TextField(verbose_name="Phone Numbers - ഫോൺ നമ്പറുകൾ",blank=True,null=True)
+    facilities_available = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Facilities Available (light, kitchen, toilets etc.) - ലഭ്യമായ സൗകര്യങ്ങൾ"
+    )
+    map_link = models.CharField(max_length=250, verbose_name='Map link',blank=True,null=True,help_text="Copy and paste the full Google Maps link")
+    latlng = models.CharField(max_length=100, verbose_name='GPS Coordinates', blank=True,help_text="Comma separated latlng field. Leave blank if you don't know it")
+
+    total_people = models.IntegerField(null=True,blank=True,verbose_name="Total Number of People")
+    total_males = models.IntegerField(null=True,blank=True,verbose_name="Number of Males")
+    total_females = models.IntegerField(null=True,blank=True,verbose_name="Number of Females")
+    total_infants = models.IntegerField(null=True,blank=True,verbose_name="Number of Infants (<2y)")
+
+    food_req = models.TextField(blank=True,null=True,verbose_name="Food - ഭക്ഷണം")
+    clothing_req = models.TextField(blank=True,null=True,verbose_name="Clothing - വസ്ത്രം")
+    sanitary_req = models.TextField(blank=True,null=True,verbose_name="Sanitary - സാനിറ്ററി")
+    medical_req = models.TextField(blank=True,null=True,verbose_name="Medical - മെഡിക്കൽ")
+    other_req = models.TextField(blank=True,null=True,verbose_name="Other - മറ്റുള്ളവ")
+
+    status = models.CharField(
+        max_length = 10,
+        choices = relief_camp_status,
+        default = 'active',
+    )
+
+    class Meta:
+        verbose_name = 'Private Relief: Camp'
+        verbose_name_plural = "Private Relief: Camps"
+
 
     def __str__(self):
         return self.name
@@ -420,3 +477,23 @@ class DataCollection(models.Model):
 
     def __str__(self):
         return self.document_name
+
+class RequestUpdate(models.Model):
+    request = models.ForeignKey(Request, on_delete=models.CASCADE)
+    status = models.CharField(
+            max_length = 10,
+            choices = volunteer_update_status_types
+        )
+
+    other_status = models.CharField(max_length=255, verbose_name='Status description if none of the default statuses are applicable', default='')
+    updater_name = models.CharField(max_length=100, verbose_name='Name of person or group updating', blank=False)
+
+    phone_number_regex = RegexValidator(regex='^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$', message='Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>', code='invalid_mobile')
+    updater_phone = models.CharField(max_length=14,verbose_name='Phone number of person or group updating', validators=[phone_number_regex])
+
+    notes = models.TextField(verbose_name='Volunteer comments', blank=True)
+
+    update_ts = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.get_status_display()

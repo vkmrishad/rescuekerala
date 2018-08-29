@@ -2,9 +2,8 @@
 {% load bootstrap3 %}
 
 {% block content %}
-
-<h1 class="text-center">To Contribute Materials</h1>
-<h2 class="text-center">സംഭാവന നല്‍കാന്‍</h2>
+<h1 class="text-center">Enter New Camp Details</h1>
+<h2 class="text-center">--</h2>
   <form method="post">
   {% csrf_token %}
   {% bootstrap_form form %}
@@ -14,9 +13,6 @@
   </button>
   {% endbuttons %}
   </form>
-<script>
-    window.onload = function() {
-        $("#id_phone").attr('type', 'number');
-    }
-</script>
+
+
 {% endblock %}

@@ -2,15 +2,19 @@ from django.urls import path
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from . import views
+from . import api_views
 
 urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
     path('ngo-volunteer/', views.NgoVolunteerView.as_view(), name='ngovolunteerview'),
     path('map-view/', views.MapView.as_view(), name='mapview'),
     path('request/', views.CreateRequest.as_view(), name='requestview'),
+    path('request_update/', api_views.request_update_list, name='api_request_update'),
     # path('volunteer/', views.Maintenance.as_view(), name='registerview'),
     path('volunteer/', views.RegisterVolunteer.as_view(), name='registerview'),
+    path('volunteerdata/', views.volunteerdata, name='volunteerdata'),
     path('NGO/', views.RegisterNGO.as_view(), name='ngoregisterview'),
+    path('ngoview/', views.ngo_list, name='ngoview'),
     path('NGO/download/', views.download_ngo_list, name='ngo_download_view'),
     path('requests/', views.request_list, name='requestlistview'),
     url(r'request_details/(?P<request_id>\d+)/$', views.request_details, name='requestdetailsview'),
@@ -19,13 +23,20 @@ urlpatterns = [
     path('req_sucess/', views.ReqSuccess.as_view(), name='req_sucessview'),
     path('district_needs/', views.DistNeeds.as_view(), name='distneedsview'),
     path('reg_contrib/', views.RegisterContributor.as_view(), name='reg_contribview'),
+    path('contribview/', views.contributors, name='contribview'),
     path('contrib_success/', views.ContribSuccess.as_view(), name='contribsucessview'),
     path('disclaimer/', views.DisclaimerPage.as_view(), name='disclaimer'),
     path('ieee/', views.AboutIEEE.as_view(), name='aboutieee'),
+    path('pcampadd' , views.RegisterPrivateReliefCamp.as_view() , name="Private Camps"),
+    path('pcamp/' , views.pcamplist , name="privatecamplist"),
+    path('pcampdet/' , views.pcampdetails , name="privatecampdetails"),
     path('data/' , views.data , name="data"),
     path('map/' , views.mapview , name="mapview"),
     path('dmodash/' , views.dmodash , name="DMODash"),
     path('dmoinfo/' , views.dmoinfo , name="DMOInfo" ),
+    path('dmocsv/' , views.dmocsv , name="DMOCSV" ),
+    path('dmodist/' , views.dmodist , name="DMODist" ),
+    path('dmotal/' , views.dmotal , name="DMOTal" ),
     path('error/' , views.error , name="errorview" ),
     path('login/', auth_views.LoginView.as_view(template_name='mainapp/login.html'),name='user_login'),
     path('logout/', views.logout_view, name='user_logout'),
@@ -40,4 +51,6 @@ urlpatterns = [
     path('announcements/', views.announcements, name="Announcements"),
     path('camp_requirements/', views.camp_requirements_list, name='camp_requirements_list'),
     path('submission_success/', views.SubmissionSuccess.as_view(), name='submission_success'),
+    path('consent_success/', views.ConsentSuccess.as_view(), name='consent_success'),
+    url(r'c/(?P<pk>\d+)/(?P<ts>\d+)/$', views.VolunteerConsent.as_view(), name='volunteer_consent'),
 ]

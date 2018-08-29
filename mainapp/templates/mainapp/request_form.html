@@ -40,7 +40,7 @@
         2. Choose the <b>Allow</b> option.
       </div>
       <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Ok</button>
+        <button class="btn btn-primary" data-dismiss="modal" id="modal_ok_button" aria-hidden="true">Ok</button>
       </div>
     </div>
   </div>
@@ -54,7 +54,7 @@
 		for(var i=0; i< checkboxes.length; i++) {
 			checkboxes[i].addEventListener("change",checkVisibility);
 		}
- 	 	
+
  	 	function checkVisibility(){
 			var formgroups = document.querySelectorAll(".form-group");
 			Array.prototype.forEach.call(formgroups, function(el, i){
@@ -72,13 +72,13 @@
 						}
 					}
 					else if(checkboxElem.checked){
-						formgroups[i+1].style.display = "block";						
+						formgroups[i+1].style.display = "block";
 					}
 					else{
-						formgroups[i+1].style.display = "none";												
+						formgroups[i+1].style.display = "none";
 					}
 				}
-			});  		
+			});
 
 		}
   }
