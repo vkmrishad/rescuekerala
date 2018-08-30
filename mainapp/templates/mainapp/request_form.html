@@ -278,10 +278,7 @@
 
   function loadPlacePicker(){
     var inputElem = document.getElementById('inp_location_search');
-    var options = {
-      types: ['(regions)']
-    };
-    var autocomplete = new google.maps.places.Autocomplete(inputElem, options);
+    var autocomplete = new google.maps.places.Autocomplete(inputElem);
     autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
     autocomplete.addListener('place_changed', function() {
       var place = autocomplete.getPlace();
