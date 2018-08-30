@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><a href="../privatecc/">Private Relief & Collection Centres</a></li>
+    <li class="breadcrumb-item"><a href="{%url 'privatedetails' %}">Private Relief & Collection Centres</a></li>
     <li class="breadcrumb-item active" aria-current="page">View Private Relief Camps</li>
   </ol>
 </nav>
@@ -54,7 +54,7 @@
 
             <td>
                 <div class="btn-group">
-                     <a href="/pcampdet?id={{ item.id  }}" class="btn btn-default">
+                    <a href="{%url 'privatecampdetails' %}?id={{ item.id  }}" class="btn btn-default">
                         {% bootstrap_icon "search" %} Camp Details
                     </a>
                 </div>

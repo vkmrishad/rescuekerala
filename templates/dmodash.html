@@ -85,12 +85,12 @@ a.new{
 
     <p style="margin-bottom:20px;margin-top:50px;">
 </p>
-    <a href="/dmodist" class="home-button card" role="button">
+    <a href="{%url 'DMODist' %}" class="home-button card" role="button">
       {% bootstrap_icon "user" %}
       <span class="text">
         View stats By district      </span>
   </a>
-  <a href="/dmotal" class="home-button card" role="button">
+  <a href="{%url 'DMOTal' %}" class="home-button card" role="button">
       {% bootstrap_icon "user" %}
       <span class="text">
         Views Stats By Taluk
@@ -99,7 +99,7 @@ a.new{
 
 
 
-  <a href="/dmoinfo" class="home-button card" role="button">
+  <a href="{%url 'DMOInfo' %}" class="home-button card" role="button">
     {% bootstrap_icon "search" %}
     <span class="text">
       Public data insights

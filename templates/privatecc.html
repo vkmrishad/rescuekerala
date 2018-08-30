@@ -20,28 +20,28 @@
         <strong>ദുരിതാശ്വാസ പ്രവര്‍ത്തനങ്ങളും രക്ഷാ ദൗത്യങ്ങളും ഏകോപിപ്പിക്കാന്‍</strong><br/>
     <b><a href="{% static 'images/msg_cm.jpg' %}">Message from Hon. Chief Minister of Kerala</a></b>
   </p>
-    <a href="/collection_center" class="home-button card" role="button">
+    <a href="{%url 'collection_centers_view' %}" class="home-button card" role="button">
         {% bootstrap_icon "plus" %}
         <span class="text">
           Add Collection Center<br/>
           <span class="ml small"></span>
         </span>
     </a>
-    <a href="/collection_centers" class="home-button card" role="button">
+    <a href="{%url 'collection_centers_district_select' %}" class="home-button card" role="button">
         {% bootstrap_icon "search" %}
         <span class="text">
           View Collection Centers<br/>
           <span class="ml small"> ‍</span>
         </span>
     </a>
-    <a href="/pcampadd" class="home-button card" role="button">
+    <a href="{%url 'Private Camps' %}" class="home-button card" role="button">
         {% bootstrap_icon "plus" %}
         <span class="text">
           Add Private Relief Camp<br/>
           <span class="ml small"></span>
         </span>
     </a>
-    <a href="/pcamp" class="home-button card" role="button">
+    <a href="{%url 'privatecamplist' %}" class="home-button card" role="button">
         {% bootstrap_icon "search" %}
         <span class="text">
           View Private Relief Camps<br/>

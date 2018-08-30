@@ -53,7 +53,7 @@
       <a href="http://www.itmission.kerala.gov.in/">
       <img src="{% static 'images/it-mission.png' %}" class="nav-logo" style="float: right;">
       </a>
-      <a href="/ieee/"><img src="{% static 'images/ieeelogo.png' %}" class="nav-logo" style="float: right;margin-right: 6px;"></a>
+      <a href="{%url 'aboutieee' %}"><img src="{% static 'images/ieeelogo.png' %}" class="nav-logo" style="float: right;margin-right: 6px;"></a>
     </div>
 </nav>
 <div class="container">
@@ -78,7 +78,7 @@
 
 <footer class="footer">
   <div class="container text-center">
-    <a href="/disclaimer/" style="font-weight:bold">Disclaimer</a>
+      <a href="{%url 'disclaimer' %}" style="font-weight:bold">Disclaimer</a>
     <span>&nbsp;|&nbsp;</span>
     <a href="https://github.com/IEEEKeralaSection/rescuekerala/" target="_blank">GitHub</a>
     <br /><br />

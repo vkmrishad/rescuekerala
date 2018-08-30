@@ -19,49 +19,49 @@
           <a class="btn btn-info btn-msg" href="https://donation.cmdrf.kerala.gov.in/">Donate to Chief Minister's Fund Online</a>
           <a class="btn btn-info btn-msg" href="https://afterflood.in">After Flood Resources</a>
   </p>
-    <a href="/request/" class="home-button card" role="button">
+  <a href="{%url 'requestview' %}" class="home-button card" role="button">
         {% bootstrap_icon "grain" %}
         <span class="text">
             Request<br/>for help<br/>
             <span class="ml small notranslate">സഹായം അഭ്യർത്ഥിക്കാൻ</span>
         </span>
     </a>
-    <a href="/missing_and_finding_persons/" class="home-button card" role="button">
+    <a href="{%url 'report_find_person' %}" class="home-button card" role="button">
         {% bootstrap_icon "user" %}
         <span class="text">
             Missing Person/<br />Find Person<br/>
                 <span class="ml small notranslate">വ്യക്തിയെ തിരയുക/<br/>കാണാതായ വ്യക്തികളെ <br/>റിപ്പോർട്ട് ചെയ്യുക</span>
         </span>
     </a>
-    <a href="/relief_camps/" class="home-button card" role="button">
+    <a href="{%url 'relief_camps' %}" class="home-button card" role="button">
         {% bootstrap_icon "home" %}
         <span class="text">
           Relief Camps<br/>
           <span class="ml small notranslate">ദുരിതാശ്വാസ ക്യാമ്പുകൾ</span>
         </span>
     </a>
-    <a href="/reg_contrib/" class="home-button card" role="button">
+    <a href="{%url 'reg_contribview' %}" class="home-button card" role="button">
         {% bootstrap_icon "apple" %}
         <span class="text">
             To Contribute<br/>
             <span class="ml small notranslate">സംഭാവന നൽകാൻ</span>
         </span>
     </a>
-    <a href="/district_needs/" class="home-button card" role="button">
+    <a href="{%url 'distneedsview' %}" class="home-button card" role="button">
         {% bootstrap_icon "map-marker" %}
         <span class="text">
             DISTRICT NEEDS &amp; COLLECTION CENTERS<br/>
             <span class="ml small notranslate">ജില്ലകളിലെ ആവശ്യങ്ങള്‍</span>
         </span>
     </a>
-    <a href="/ngo-volunteer/" class="home-button card" role="button">
+    <a href="{%url 'ngovolunteerview' %}" class="home-button card" role="button">
         {% bootstrap_icon "user" %}
         <span class="text">
             Volunteer &amp; NGO/COMPANY <br/>
             <span class="ml small notranslate">വൊളന്‍റീയര &amp;<br/> എൻജിഒ്/കമ്പനി‍ </span>
         </span>
     </a>
-    <a href="/map-view" class="home-button card" role="button">
+    <a href="{%url 'mapview' %}" class="home-button card" role="button">
         {% bootstrap_icon "globe" %}
         <span class="text">
             Maps<br/>
@@ -75,21 +75,21 @@
             <span class="ml small notranslate">ഞങ്ങളുമായി ബന്ധപ്പെടാന്‍</span>
         </span>
     </a>
-    <a href="/requests/?district=" class="home-button card" role="button">
+    <a href="{%url 'requestlistview' %}?district=" class="home-button card" role="button">
       {% bootstrap_icon "list" %}
       <span class="text">
         Registered Requests<br/>
         <span class="ml small notranslate">ഇതു വരെ ആവശ്യപ്പെട്ടവ</span>
       </span>
     </a>
-    <a href="/announcements" class="home-button card" role="button">
+    <a href="{%url 'Announcements' %}" class="home-button card" role="button">
         {% bootstrap_icon "bullhorn" %}
         <span class="text">
         Announcements<br/>
             <span class="ml small notranslate">അറിയിപ്പുകൾ</span>
         </span>
     </a>
-    <a href="/privatecc" class="home-button card" role="button">
+    <a href="{%url 'privatedetails' %}" class="home-button card" role="button">
         {% bootstrap_icon "briefcase" %}
         <span class="text">
                 Private Relief &<br> Collection Centers<br/>
