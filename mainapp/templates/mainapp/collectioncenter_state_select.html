@@ -8,7 +8,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><a href="../privatecc/">Private Relief & Collection Centres</a></li>
+    <li class="breadcrumb-item"><a href="{%url 'privatedetails' %}">Private Relief & Collection Centres</a></li>
     <li class="breadcrumb-item active" aria-current="page">View Collection Centers</li>
   </ol>
 </nav>
@@ -21,14 +21,14 @@
         <strong>ദുരിതാശ്വാസ പ്രവര്‍ത്തനങ്ങളും രക്ഷാ ദൗത്യങ്ങളും ഏകോപിപ്പിക്കാന്‍</strong><br/>
     <b><a href="{% static 'images/msg_cm.jpg' %}">Message from Hon. Chief Minister of Kerala</a></b>
   </p>
-    <a href="/collection_centers/inside_kerala/" class="home-button card" role="button">
+  <a href="{%url 'collection_centers_list' location='inside_kerala' %}" class="home-button card" role="button">
         {% bootstrap_icon "home" %}
         <span class="text">
           Inside Kerala<br/>
           <span class="ml small"></span>
         </span>
     </a>
-    <a href="/collection_centers/outside_kerala/" class="home-button card" role="button">
+    <a href="{%url 'collection_centers_list' location='outside_kerala' %}" class="home-button card" role="button">
         {% bootstrap_icon "send" %}
         <span class="text">
           Outside Kerala<br/>

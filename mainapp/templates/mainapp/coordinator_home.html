@@ -5,8 +5,8 @@
 
 
 <div class="text-right">
-    <a href="/find_people">Search People</a> |
-    <a href="/logout">Logout</a>
+    <a href="{%url 'find_people' %}">Search People</a> |
+    <a href="{%url 'user_logout' %}">Logout</a>
 </div>
 
 <h3>
@@ -48,13 +48,13 @@
             <td>{{ item.count }}</td>
             <td>
                 <div class="btn-group">
-                    <a href="/camp/{{ item.id  }}/add_person" class="btn btn-default">
+                    <a href="{%url 'add_person' camp_id=item.id %}" class="btn btn-default">
                         {% bootstrap_icon "user" %}  Register People
                     </a>
-                    <a href="/camp/{{ item.id  }}/requirements" class="btn btn-default">
+                    <a href="{%url 'camp_requirements' pk=item.id %}" class="btn btn-default">
                         {% bootstrap_icon "pencil" %} Requirements
                     </a>
-                     <a href="/camp/{{ item.id  }}/details" class="btn btn-default">
+                     <a href="{%url 'camp_details' pk=item.id %}" class="btn btn-default">
                         {% bootstrap_icon "pencil" %} Camp Details
                     </a>
                     </a>
