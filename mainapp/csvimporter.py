@@ -18,7 +18,6 @@ def parsedate(str):
                     return datetime.datetime.strptime(str, "%d/%m/%Y" )
         return None
     except :
-        print(str)
         return None
 
 def import_inmate_file(csvid):
@@ -51,6 +50,7 @@ def import_inmate_file(csvid):
             empty = 0
             header = ["name" , "phone" , "address" , "notes" , "district" , "checkin_date" , "checkout_date" , "gender" , "age" ]
             for i in header:
+                if(datum.get(i, "") == None):empty+=1;continue
                 if(datum.get(i, "").strip() == ""):empty+=1
             if(empty == len(header)):
                 continue
@@ -62,8 +62,9 @@ def import_inmate_file(csvid):
                 elif(datum.get("gender", "")[0] == "f" or datum.get("gender", "")[0] == "F"):
                     gender = 1
             age = '-1'
-            if(datum.get("age", "").strip() != ""):
-               age = datum.get("age", "").strip()
+            if(datum.get("age", "") != None):
+                if(datum.get("age", "").strip() != ""):
+                    age = datum.get("age", "").strip()
 
 
             Person(
