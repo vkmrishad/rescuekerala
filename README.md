@@ -120,9 +120,13 @@ https://github.com/vigneshhari/keralarescue_test_settings for local testing.
 
 <details>
 <summary>4. Install dependencies.</summary>
+    
+```
+pip3 install -r requirements_debug.txt
+```
 
-        pip3 install -r requirements.txt
-        pip3 install -r requirements_debug.txt
+
+    
 </details>
 
 <details>
