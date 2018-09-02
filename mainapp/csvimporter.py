@@ -20,7 +20,7 @@ def parsedate(str):
     except :
         return None
 
-def import_inmate_file(csvid):
+def import_inmate_file(csvid, is_recovery=False):
 
     import django
     django.setup()
@@ -80,8 +80,11 @@ def import_inmate_file(csvid):
                 checkin_date = parsedate(datum.get("checkin_date", None)),
                 checkout_date = parsedate(datum.get("checkout_date", None))
             ).save()
-        CsvBulkUpload.objects.filter(id = csvid).update(is_completed = True)
-        CsvBulkUpload.objects.filter(id = csvid).update(failure_reason = '')
+        if is_recovery:
+            csv_name = CsvBulkUpload.objects.get(id=csvid).name
+            CsvBulkUpload.objects.filter(id = csvid).update(is_completed = True, failure_reason = '', name="rec-"+csv_name[:15])
+        else:
+            CsvBulkUpload.objects.filter(id = csvid).update(is_completed = True, failure_reason = '')
     except Exception as e:
         CsvBulkUpload.objects.filter(id = csvid).update(failure_reason=(getattr(e, 'message', repr(e))))
 
