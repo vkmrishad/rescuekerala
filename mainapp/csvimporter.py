@@ -65,7 +65,9 @@ def import_inmate_file(csvid, is_recovery=False):
             if(datum.get("age", "") != None):
                 if(datum.get("age", "").strip() != ""):
                     age = datum.get("age", "").strip()
-
+            district = ""
+            if(datum.get("district", "") != None):
+                district = district.lower()
 
             Person(
                 name = datum.get("name", "")[:50],
@@ -80,6 +82,7 @@ def import_inmate_file(csvid, is_recovery=False):
                 checkin_date = parsedate(datum.get("checkin_date", None)),
                 checkout_date = parsedate(datum.get("checkout_date", None))
             ).save()
+
         if is_recovery:
             csv_name = CsvBulkUpload.objects.get(id=csvid).name
             CsvBulkUpload.objects.filter(id = csvid).update(is_completed = True, failure_reason = '', name="rec-"+csv_name[:15])
