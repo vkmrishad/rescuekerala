@@ -68,7 +68,7 @@ def import_inmate_file(csvid):
 
 
             Person(
-                name = datum.get("name", ""),
+                name = datum.get("name", "")[:50],
                 phone = datum.get("phone", ""),
                 age = int(float(age)),
                 gender = gender,

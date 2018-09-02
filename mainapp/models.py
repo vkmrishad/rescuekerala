@@ -449,7 +449,7 @@ class PrivateRescueCamp(models.Model):
 
 
 class Person(models.Model):
-    name = models.CharField(max_length=30,blank=False,null=False,verbose_name="Name - പേര്")
+    name = models.CharField(max_length=51,blank=False,null=False,verbose_name="Name - പേര്")
     phone = models.CharField(max_length=11,null=True,blank=True,verbose_name='Mobile - മൊബൈൽ')
     age = models.IntegerField(null=True,blank=True,verbose_name="Age - പ്രായം")
     gender = models.IntegerField(
