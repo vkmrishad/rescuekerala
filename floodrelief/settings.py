@@ -230,7 +230,7 @@ bucket_name = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 S3_URL = "https://{}.s3.ap-south-1.amazonaws.com".format(bucket_name,)
 
 
-if os.environ.get('USE_S3','') == "true" :
+if os.environ.get('USE_S3','').lower() == "true" :
     AWS_STORAGE_BUCKET_NAME=bucket_name
     AWS_ACCESS_KEY_ID=os.environ.get("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY=os.environ.get("AWS_SECRET_ACCESS_KEY")
