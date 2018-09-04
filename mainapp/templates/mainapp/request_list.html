@@ -88,9 +88,10 @@
         <th>Request Number - അപേക്ഷ നമ്പര്‍</th>
         <th>District - ജില്ല</th>
         <th>Location - സ്ഥലം</th>
-        <th>Requestee - അപേക്ഷകന്‍റെ പേര</th>
+        <th>Requestee - അപേക്ഷകന്‍റെ പേര്</th>
         <th>Phone - ഫോണ്‍ നമ്പര്‍</th>
         <th>Date - തീയതി</th>
+        <th>Elapsed Time - കഴിഞ്ഞു പോയ സമയം </th>
         <th>More details - കൂടുതൽ വിശദാംശങ്ങൾ</th>
 		<th>Update</th>
       </tr>
@@ -108,7 +109,8 @@
           <td><a href="tel:{{ req.requestee_phone }}" >{{ req.requestee_phone }}</a></td>
           {% endif %}
           <td>{{ req.dateadded }}</td>
-          <td><a class="btn btn-sm btn-success" href="{%url 'requestdetailsview' req.id %}" target="_blank">More details</a>
+          <td>{{ req.dateadded|timesince }}</td>
+          <td><a class="btn btn-sm btn-success" href="{%url 'requestdetailsview' req.id %}" target="_blank">More details</a></td>
 	  	  <td><a class="btn btn-sm btn-success" href="{%url 'requestupdateview' req.id %}" target="_blank">Update</a></td>
         </tr>
     {% endfor %}
