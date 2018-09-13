@@ -65,14 +65,17 @@ class RequestAdmin(admin.ModelAdmin):
     list_filter = ('district', 'status','dateadded')
 
     def mark_as_completed(self, request, queryset):
+        self.message_user(request, "Marked selected requests as completed.")
         queryset.update(status='sup')
         return
 
     def mark_as_new(self, request, queryset):
+        self.message_user(request, "Marked selected requests as new.")
         queryset.update(status='new')
         return
 
     def mark_as_ongoing(self, request, queryset):
+        self.message_user(request, "Marked selected requests as ongoing.")
         queryset.update(status='pro')
         return
 
